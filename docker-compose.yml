@@ -12,7 +12,7 @@ services:
       - SECRET_KEY=secret
       - MONGO_USERNAME=admin
       - MONGO_PASSWORD=admin5123899
-      - MONGO_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty?retryWrites=true&w=majority-
-      - MONGO_TEST_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty_test?retryWrites=true&w=majority-
+      - MONGO_URI=mongodb+srv://admin:admin5123899@mern.qmurp.mongodb.net/shorty?retryWrites=true&w=majority-
+      - MONGO_TEST_URI=mongodb+srv://admin:admin5123899@mern.qmurp.mongodb.net/shorty_test?retryWrites=true&w=majority-
       - DOMAIN=ec2-18-188-125-35.us-east-2.compute.amazonaws.com
       - ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
