@@ -31,6 +31,7 @@ class BitlyShortener(Resource):
                     res, code = bitly_shorten(to_url)
                     mongo.db.urls.insert(
                         {"to_url": to_url, "from_url": res["link"]})
+
                     return {
                         "from_url": res["link"]
                     }, code

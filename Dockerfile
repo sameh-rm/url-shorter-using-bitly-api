@@ -7,8 +7,8 @@ WORKDIR /app
 ENV SECRET_KEY=secret
 ENV MONGO_USERNAME=admin
 ENV MONGO_PASSWORD=admin5123899
-ENV MONGO_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty?retryWrites=true&w=majority-
-ENV MONGO_TEST_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty_test?retryWrites=true&w=majority-
+ENV MONGO_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty
+ENV MONGO_TEST_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty_test
 ENV DOMAIN=ec2-18-188-125-35.us-east-2.compute.amazonaws.com
 ENV ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
 
