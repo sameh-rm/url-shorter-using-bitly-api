@@ -1,0 +1,38 @@
+version: 2.1
+defaultDockerImage: &defaultDockerImage
+  docker:
+    - image: circleci/python:3.7.0-browsers
+      environment:
+        SECRET_KEY: ${SECRET_KEY}
+        MONGO_URI: ${MONGO_URI}
+        MONGO_TEST_URI: ${MONGO_TEST_URI}
+        DOMAIN: ${DOMAIN}
+        ACCESS_TOKEN: ${ACCESS_TOKEN}
+
+jobs:
+  build:
+    <<: *defaultDockerImage
+    steps:
+      - checkout
+      - run: python3 -m venv env
+      - run: pip3 install -r requirements.txt --user
+      - save_cache:
+          key: "python-env"
+          paths:
+            - /env
+  test:
+    <<: *defaultDockerImage
+    steps:
+      - checkout
+      - restore_cache:
+          key: "python-env"
+      - run: pip3 install -r requirements.txt --user
+      - run: python3 manage.py test
+
+workflows:
+  automate_flask_app:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build

@@ -1,0 +1,16 @@
+version: "3"
+services:
+  app:
+    build: .
+    ports:
+      - "80:5000"
+    volumes:
+      - .:/app
+    environment:
+      - SECRET_KEY=secret
+      - MONGO_USERNAME=admin
+      - MONGO_PASSWORD=admin5123899
+      - MONGO_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty?retryWrites=true&w=majority-
+      - MONGO_TEST_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty_test?retryWrites=true&w=majority-
+      - DOMAIN=127.0.0.1:5000
+      - ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
