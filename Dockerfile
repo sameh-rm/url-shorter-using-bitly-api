@@ -17,7 +17,6 @@ COPY . /app/
 
 
 EXPOSE 5000
-RUN python3 manage.py test
 
 ENTRYPOINT ["python3"]
 CMD ["manage.py","run"]
