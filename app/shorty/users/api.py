@@ -13,7 +13,8 @@ authorizations = {
     'authorization': {
         'type': 'apiKey',
         'in': 'header',
-        'name': 'authorization'
+        'name': 'authorization',
+        "description": "Bearer {Token}"
     }
 }
 api = Namespace("users", description="users related operations",
@@ -37,14 +38,18 @@ user_url = api.model("AddUserURl", {
     "to_url": fields.Url("https://www.google.com/")
 })
 
+responses = {
+    200: "Success",
+    400: "username and password are required to login",
+    404: "login failed check your username and password and try again",
+    422: "invalid password"
+}
+
 
 @api.route("/login", methods=["POST"])
 class Login(Resource):
     @api.expect(login_model)
-    @api.doc(responses={200: "Success",
-                        400: "username and password are required to login",
-                        404: "login failed check your username and password and try again",
-                        422: "invalid password"})
+    @api.doc(responses=responses)
     def post(self):
         try:
             body = api.payload
@@ -53,7 +58,7 @@ class Login(Resource):
             if not username or not password:
                 abort(400, "username and password are required to login")
 
-            # check if the username sent is an existed username or email
+            # check if the sent username is an existed username or email
             user_exists = mongo.db.users.find_one(
                 {"$or": [{"username": username}, {"email": username}]})
 
