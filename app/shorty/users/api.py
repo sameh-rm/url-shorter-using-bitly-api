@@ -102,7 +102,6 @@ class Register(Resource):
 
 @api.route("/urls", methods=["GET"])
 class UserUrls(Resource):
-    @api.expect(user_url)
     @api.doc(security="authorization",
              responses={201: "Success",
                         401: "Token is missing",

@@ -6,7 +6,7 @@ from functools import wraps
 from flask import request
 import json
 from app.shorty.models import User
-from app.shorty.settings import SECRET_KEY
+from app.shorty.settings import SECRET_KEY, ACCESS_TOKEN
 
 algorithm = "HS256"
 
@@ -47,7 +47,7 @@ def token_required(f):
 def bitly_shorten(to_url):
     import requests
     headers = {
-        'Authorization': 'Bearer c0a816258e5e36f9558185f8c9b5c76a3aff1369',
+        'Authorization': f'Bearer {ACCESS_TOKEN}',
         'Content-Type': 'application/json',
     }
 

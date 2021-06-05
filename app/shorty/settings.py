@@ -11,7 +11,7 @@ MONGO_URI = getenv("MONGO_URI")
 MONGO_TEST_URI = getenv("MONGO_TEST_URI")
 SECRET_KEY = getenv("SECRET_KEY")
 SHA_METHOD = getenv("SHA_METHOD")
-
+ACCESS_TOKEN = getenv("ACCESS_TOKEN")
 DOMAIN = getenv("DOMAIN")
 if not DOMAIN.endswith("/"):
     DOMAIN += "/"
