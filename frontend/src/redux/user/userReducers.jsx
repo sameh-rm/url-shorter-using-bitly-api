@@ -3,12 +3,6 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userActionTypes from "./user.actionTypes";
 
-const persistConfig = {
-  key: "user",
-  storage,
-  whitelist: ["lgoin"],
-};
-
 export const loginReducer = (state = {}, action) => {
   switch (action.type) {
     case userActionTypes.USER_LOGIN_REQUEST:
@@ -25,6 +19,8 @@ export const loginReducer = (state = {}, action) => {
         loading: false,
         error: action.payload.message,
       };
+    case userActionTypes.LOGOUT:
+      return {};
     default:
       return state;
   }
@@ -51,18 +47,23 @@ export const registerReducer = (state = {}, action) => {
   }
 };
 
-export const bitlyReducer = (state = {}, action) => {
+export const shortenApiReducer = (
+  state = {
+    from_url: undefined,
+  },
+  action
+) => {
   switch (action.type) {
-    case userActionTypes.USER_BITLY_API_REQUEST:
+    case userActionTypes.USER_SHORTEN_API_REQUEST:
       return {
         loading: true,
       };
-    case userActionTypes.USER_BITLY_API_SUCCESS:
+    case userActionTypes.USER_SHORTEN_API_SUCCESS:
       return {
         loading: false,
-        link: action.payload,
+        from_url: action.payload.from_url,
       };
-    case userActionTypes.USER_BITLY_API_FAILED:
+    case userActionTypes.USER_SHORTEN_API_FAILED:
       return {
         loading: false,
         error: action.payload.message,
@@ -72,18 +73,18 @@ export const bitlyReducer = (state = {}, action) => {
   }
 };
 
-export const localReducer = (state = {}, action) => {
+export const linksListReducer = (state = { links: [] }, action) => {
   switch (action.type) {
-    case userActionTypes.USER_LOCAL_API_REQUEST:
+    case userActionTypes.USER_LINKS_LIST_REQUEST:
       return {
         loading: true,
       };
-    case userActionTypes.USER_LOCAL_API_SUCCESS:
+    case userActionTypes.USER_LINKS_LIST_SUCCESS:
       return {
         loading: false,
-        link: action.payload,
+        links: action.payload,
       };
-    case userActionTypes.USER_LOCAL_API_FAILED:
+    case userActionTypes.USER_LINKS_LIST_FAILED:
       return {
         loading: false,
         error: action.payload.message,
@@ -93,31 +94,15 @@ export const localReducer = (state = {}, action) => {
   }
 };
 
-export const linksListReducer = (state = {}, action) => {
-  switch (action.type) {
-    case userActionTypes.USER_LOCAL_API_REQUEST:
-      return {
-        loading: true,
-      };
-    case userActionTypes.USER_LOCAL_API_SUCCESS:
-      return {
-        loading: false,
-        link: action.payload,
-      };
-    case userActionTypes.USER_LOCAL_API_FAILED:
-      return {
-        loading: false,
-        error: action.payload.message,
-      };
-    default:
-      return state;
-  }
+const persistConfig = {
+  key: "user",
+  storage,
+  whitelist: ["login"],
 };
 const userReducer = combineReducers({
   login: loginReducer,
   register: registerReducer,
-  bitly: bitlyReducer,
-  local: localReducer,
+  userShortenApi: shortenApiReducer,
   links: linksListReducer,
 });
 

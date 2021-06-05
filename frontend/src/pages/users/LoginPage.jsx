@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Container, Form, Spinner } from "react-bootstrap";
 import { login } from "../../redux/user/user.actions";
+import Message from "../../components/Message";
 const LoginPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -25,7 +26,8 @@ const LoginPage = () => {
 
   return (
     <Container className="pt-5 mx-auto col-md-6">
-      <h2>Login Page</h2>
+      <h2>SignIn</h2>
+      {error && <Message>{error}</Message>}
       <Form onSubmit={onSubmitHandler}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Username</Form.Label>

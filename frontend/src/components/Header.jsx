@@ -1,29 +1,50 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { LinkContainer } from "react-router-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/user/user.actions";
+
 const Header = () => {
   const userInfo = useSelector((state) => state.user.login.userInfo);
+  const dispatch = useDispatch();
 
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
   return (
     <header>
-      <Navbar bg="light" expand="lg">
+      <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="#home">Shorty</Navbar.Brand>
+          <LinkContainer to="/">
+            <Navbar.Brand>Shorty</Navbar.Brand>
+          </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="">Link</Nav.Link>
+              <LinkContainer to="/">
+                <Nav.Link>Home</Nav.Link>
+              </LinkContainer>
+            </Nav>
+            <Nav>
               {userInfo && userInfo.token ? (
-                <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="#action/3.3">
-                    My Urls
-                  </NavDropdown.Item>
+                <NavDropdown title={userInfo.username} id="basic-nav-dropdown">
+                  <LinkContainer to="/urls">
+                    <NavDropdown.Item>My Urls</NavDropdown.Item>
+                  </LinkContainer>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="/users/urls">Logout</NavDropdown.Item>
+                  <NavDropdown.Item onClick={logoutHandler}>
+                    Logout
+                  </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <Nav.Link href="">Login</Nav.Link>
+                <>
+                  <LinkContainer to="/login">
+                    <Nav.Link>Login</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to="/register">
+                    <Nav.Link>Register</Nav.Link>
+                  </LinkContainer>
+                </>
               )}
             </Nav>
           </Navbar.Collapse>

@@ -83,6 +83,7 @@ class Register(Resource):
     @api.doc(responses={201: "Success",
                         401: "Token is missing",
                         403: "Token is invalid or expired",
+                        409: "Conflict Error Username or email already used",
                         422: "invalid user format"})
     def post(self):
         try:
@@ -99,8 +100,28 @@ class Register(Resource):
             abort(422, "invalid user format")
 
 
+@api.route("/urls", methods=["GET"])
+class UserUrls(Resource):
+    @api.expect(user_url)
+    @api.doc(security="authorization",
+             responses={201: "Success",
+                        401: "Token is missing",
+                        403: "Token is invalid or expired",
+                        })
+    @token_required
+    def get(self):
+        try:
+            username = decode_token(
+                request.headers["authorization"])["user"]
+            user_doc = mongo.db.users.find_one({"$or": [{"username": username},
+                                                        {"email": username}]})
+            return user_doc["urls"]
+        except KeyError:
+            abort(404, "this users have no urls")
+
+
 @api.route("/urls/local", methods=["POST"])
-class AddUserURl(Resource):
+class AddUserLocalURl(Resource):
     @api.expect(user_url)
     @api.doc(security="authorization",
              responses={201: "Success",
