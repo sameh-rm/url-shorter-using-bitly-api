@@ -10,9 +10,7 @@ services:
       - .:/app
     environment:
       - SECRET_KEY=secret
-      - MONGO_USERNAME=admin
-      - MONGO_PASSWORD=admin5123899
-      - MONGO_URI=mongodb+srv://admin:admin5123899@mern.qmurp.mongodb.net/shorty
-      - MONGO_TEST_URI=mongodb+srv://admin:admin5123899@mern.qmurp.mongodb.net/shorty_test
-      - DOMAIN=ec2-18-188-125-35.us-east-2.compute.amazonaws.com
-      - ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
+      - MONGO_URI=YOUR_MONGO_URI
+      - MONGO_TEST_URI=YOUR_MONGO_TEST_URI
+      - DOMAIN=YOUR_DOMAIN
+      - ACCESS_TOKEN=YOUR_ACCESS_TOKEN
