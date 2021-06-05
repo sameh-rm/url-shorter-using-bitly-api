@@ -4,13 +4,14 @@ LABEL author="Sameh Ramadan"
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 
-ENV SECRET_KEY=secret
-ENV MONGO_USERNAME=admin
-ENV MONGO_PASSWORD=admin5123899
-ENV MONGO_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty
-ENV MONGO_TEST_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty_test
-ENV DOMAIN=ec2-18-188-125-35.us-east-2.compute.amazonaws.com
-ENV ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
+# Environment variables
+ENV SECRET_KEY=SECRET_KEY
+ENV MONGO_USERNAME=MONGO_USERNAME
+ENV MONGO_PASSWORD=MONGO_PASSWORD
+ENV MONGO_URI=MONGO_URI
+ENV MONGO_TEST_URI=MONGO_TEST_URI
+ENV DOMAIN=DOMAIN
+ENV ACCESS_TOKEN=ACCESS_TOKEN
 
 RUN python3 -m pip install -r requirements.txt
 COPY . /app/
