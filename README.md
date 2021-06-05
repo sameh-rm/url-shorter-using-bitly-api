@@ -39,7 +39,7 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
   git clone https://github.com/sameh-rm/url-shorter-using-bitly-api.git
   ```
 
-- your dotenv file should contain
+- your dotenv file must contain
 
   ```bash
     # Environment variables
@@ -47,7 +47,7 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
     # mlab MONGO URI
     MONGO_URI=YOUR_MONGO_URI
     MONGO_TEST_URI=YOUR_MONGO_TEST_URI
-    # DOMAIN variable is used as a prefix to the shortened link id
+    # DOMAIN variable is used as a prefix to the local api shortened link id
     DOMAIN=YOUR_DOMAIN
     # Bitly access token
     ACCESS_TOKEN=YOUR_ACCESS_TOKEN
@@ -93,12 +93,6 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
 ##### &nbsp;&nbsp;Frontend
 
 - cd into the frontend folder
-
-  ```bash
-  python -m venv env
-  ```
-
-* Once you’ve created a virtual environment, you may activate it
   - npm, run:
     ```bash
     npm install
@@ -107,9 +101,10 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
     ```bash
     yarn install
     ```
+
 * start frontend:
   ```bash
-  yarn start
+  yarn start #or
   npm start
   ```
 
