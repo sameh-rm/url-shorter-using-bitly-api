@@ -53,11 +53,11 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
 
 * Once you’ve created a virtual environment, you may activate it
   - On Windows, run:
-    ```
+    ```cmd
     env\Scripts\activate.bat
     ```
   - On Unix or MacOS, run:
-    ```
+    ```bash
     source env/bin/activate
     ```
 * installing packages:
@@ -67,13 +67,13 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
 
 - testing the project
 
-  ```
+  ```bash
   python manage.py test
   ```
 
 - starting the project
 
-  ```
+  ```bash
   python manage.py run
   ```
 
@@ -81,17 +81,17 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
 
 - cd into the frontend folder
 
-  ```
+  ```bash
   python -m venv env
   ```
 
 * Once you’ve created a virtual environment, you may activate it
   - npm, run:
-    ```
+    ```bash
     npm install
     ```
   - yarn, run:
-    ```
+    ```bash
     yarn install
     ```
 * start frontend:
