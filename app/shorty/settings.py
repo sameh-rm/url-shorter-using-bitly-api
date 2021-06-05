@@ -16,7 +16,7 @@ DOMAIN = getenv("DOMAIN")
 if not DOMAIN.endswith("/"):
     DOMAIN += "/"
 
-DEBUG = True
+DEBUG = False
 
 URL_LEN = 8
 SEED = ascii_letters + digits

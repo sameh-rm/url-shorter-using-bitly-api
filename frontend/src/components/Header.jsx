@@ -28,7 +28,7 @@ const Header = () => {
             <Nav>
               {userInfo && userInfo.token ? (
                 <NavDropdown title={userInfo.username} id="basic-nav-dropdown">
-                  <LinkContainer to="/urls">
+                  <LinkContainer to="/user/urls">
                     <NavDropdown.Item>My Urls</NavDropdown.Item>
                   </LinkContainer>
                   <NavDropdown.Divider />

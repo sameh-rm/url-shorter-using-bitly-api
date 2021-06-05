@@ -97,7 +97,7 @@ export const listUserLinks = () => async (dispatch, getState) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        authorization: getState().user.login.userInfo.token,
+        authorization: `Bearer ${getState().user.login.userInfo.token}`,
       },
     };
     const { data } = await axios.get(

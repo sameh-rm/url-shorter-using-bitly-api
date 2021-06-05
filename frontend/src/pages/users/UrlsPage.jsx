@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Spinner, Table } from "react-bootstrap";
+import { Container, Spinner, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../../components/Message";
 import { listUserLinks } from "../../redux/user/user.actions";
@@ -11,7 +11,7 @@ const UrlsPage = () => {
     dispatch(listUserLinks());
   }, [dispatch]);
   return (
-    <div>
+    <Container>
       <h2>My Urls</h2>
       {error && <Message>{error}</Message>}
       {loading && (
@@ -27,16 +27,20 @@ const UrlsPage = () => {
         </thead>
         <tbody>
           {links &&
-            links.map((link) => (
-              <tr>
+            links.map((link, idx) => (
+              <tr key={idx}>
                 <td>{link._id}</td>
-                <td>{link.to_url}</td>
-                <td>{link.from_url}</td>
+                <td>
+                  <a href={link.to_url}>{link.to_url}</a>
+                </td>
+                <td>
+                  <a href={link.from_url}>{link.from_url}</a>
+                </td>
               </tr>
             ))}
         </tbody>
       </Table>
-    </div>
+    </Container>
   );
 };
 
