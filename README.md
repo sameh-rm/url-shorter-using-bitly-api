@@ -20,7 +20,6 @@
 ## 📝 Table of Contents
 
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
 - [Usage](/backend)
 - [Built Using](#built_using)
 - [Authors](#authors)
@@ -38,6 +37,20 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
 
   ```
   git clone https://github.com/sameh-rm/url-shorter-using-bitly-api.git
+  ```
+
+- your dotenv file should contain
+
+  ```bash
+    # Environment variables
+    SECRET_KEY=YOUR_SECRET_KEY
+    # mlab MONGO URI
+    MONGO_URI=YOUR_MONGO_URI
+    MONGO_TEST_URI=YOUR_MONGO_TEST_URI
+    # DOMAIN variable is used as a prefix to the shortened link id
+    DOMAIN=YOUR_DOMAIN
+    # Bitly access token
+    ACCESS_TOKEN=YOUR_ACCESS_TOKEN
   ```
 
 ### Installing
@@ -116,7 +129,3 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
 - Hat tip to anyone whose code was used
 - Inspiration
 - References
-
-```
-
-```
