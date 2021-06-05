@@ -6,9 +6,9 @@ from app.shorty.settings import SEED, URL_LEN, DOMAIN
 from app.shorty.utils import validate_url
 
 
-api = Namespace("local", description="local shortner related operations",
+api = Namespace("local", description="local shortener related operations",
                 )
-url_shortner_model = api.model("URLShortener", {
+url_shortener_model = api.model("URLShortener", {
     "to_url": fields.Url("https://www.google.com/")
 })
 
@@ -35,7 +35,7 @@ def insert_url(to_url):
 
 @api.route("/")
 class URLShortener(Resource):
-    @api.expect(url_shortner_model)
+    @api.expect(url_shortener_model)
     def post(self):
         jdata = request.json
         to_url = None

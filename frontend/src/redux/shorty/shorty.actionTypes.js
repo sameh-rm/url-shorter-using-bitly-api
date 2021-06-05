@@ -1,0 +1,7 @@
+const shortyActionTypes = {
+  SHORTEN_API_REQUEST: "SHORTEN_API_REQUEST",
+  SHORTEN_API_SUCCESS: "SHORTEN_API_SUCCESS",
+  SHORTEN_API_FAILED: "SHORTEN_API_FAILED",
+};
+
+export default shortyActionTypes;

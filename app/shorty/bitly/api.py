@@ -5,16 +5,16 @@ from flask_restplus import Resource, fields, Namespace
 from flask import request, abort
 from app.shorty.models import mongo
 
-api = Namespace("bitly", description="bitly shortner related operations",
+api = Namespace("bitly", description="bitly shortener related operations",
                 )
-url_shortner_model = api.model("BitlyShortener", {
+url_shortener_model = api.model("BitlyShortener", {
     "to_url": fields.String("https://www.google.com/")
 })
 
 
 @api.route("/")
 class BitlyShortener(Resource):
-    @api.expect(url_shortner_model)
+    @api.expect(url_shortener_model)
     def post(self):
         jdata = request.json
         to_url = None

@@ -10,24 +10,33 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
+import { shortenLink } from "../redux/shorty/shorty.actions";
 import { shortenUserLink } from "../redux/user/user.actions";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.user.login);
   const {
-    from_url,
+    from_url: userLink,
     loading: userShortenApiLoading,
     error: userShortenApiError,
   } = useSelector((state) => state.user.userShortenApi);
+
+  const {
+    from_url: publicLink,
+    loading,
+    error,
+  } = useSelector((state) => state.shorty.shortenApi);
+
   const [link, setLink] = useState("");
   const [api, setApi] = useState("bitly");
   const onSubmitHandler = (e) => {
     e.preventDefault();
+
     if (userInfo && userInfo.token) {
       dispatch(shortenUserLink(link, api));
     } else {
-      // dispatch(shortenLink(link, api));
+      dispatch(shortenLink(link, api));
     }
   };
 
@@ -35,7 +44,9 @@ const HomePage = () => {
     <div>
       <h1 className="logo text-center pt-3">Shorty</h1>
       <Container className="paper_elevation">
-        {userShortenApiError && <Message>{userShortenApiError}</Message>}
+        {(userShortenApiError || error) && (
+          <Message>{userShortenApiError}</Message>
+        )}
         <Nav variant="tabs" defaultActiveKey="/home">
           <Nav.Item>
             <Nav.Link
@@ -76,17 +87,17 @@ const HomePage = () => {
           </InputGroup>
         </Form>
 
-        {userShortenApiLoading ? (
+        {userShortenApiLoading || loading ? (
           <Spinner
             className="mx-auto  d-block p-3 m-3"
             animation="border"
             size="sm"
           />
         ) : (
-          from_url && (
+          (userLink || publicLink) && (
             <div className="w-100 text-center py-3">
               <p className="w-100 text-center text-white bg-primary p-2">
-                {from_url}
+                {userLink || publicLink}
               </p>
             </div>
           )
