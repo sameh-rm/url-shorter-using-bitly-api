@@ -66,7 +66,7 @@ jobs:
           name: Run unit test
           command: |
             source ~/venv/bin/activate
-            pip freeze
+            pip3 freeze
 
   deploy_infra:
     <<: *awsImage
