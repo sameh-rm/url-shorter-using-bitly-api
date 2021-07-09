@@ -11,7 +11,7 @@ setup:
 
 activate_env:
 	cd ~ && ps -la
-	source ~/venv/bin.activate
+	source ~/venv/bin/activate
 
 install:
 	# This should be run from inside a virtualenv
