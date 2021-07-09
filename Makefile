@@ -10,6 +10,7 @@ setup:
 	python3 -m venv ~/venv
 
 activate_env:
+	cd ~ && ps -la
 	source ~/venv/bin.activate
 
 install:
