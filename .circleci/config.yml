@@ -1,7 +1,7 @@
 version: 2.1
 defaultDockerImage: &defaultDockerImage
   docker:
-    - image: circleci/python:3.7.0-browsers
+    - image: circleci/python:3.7
       environment:
         SECRET_KEY: ${SECRET_KEY}
         MONGO_URI: ${MONGO_URI}
@@ -72,6 +72,7 @@ jobs:
           command: |
             source ~/venv/bin/activate
             pip3 freeze
+            python manage.py test
 
   deploy_infra:
     <<: *awsImage
