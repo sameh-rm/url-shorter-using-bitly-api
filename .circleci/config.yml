@@ -39,8 +39,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-              - venv-{{ checksum "requirements.txt" }}
-              - venv-
+              - venv-2-{{ checksum "requirements.txt" }}
+              - venv-2-
       - run:
           name: setup env
           command: |
@@ -49,7 +49,7 @@ jobs:
             sh ~/venv/bin/activate
             make install
       - save_cache:
-          key: venv-{{ checksum "requirements.txt" }}
+          key: venv-2-{{ checksum "requirements.txt" }}
           paths:
             - ~/venv
 
@@ -59,8 +59,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-              - venv-{{ checksum "requirements.txt" }}
-              - venv-
+              - venv-2-{{ checksum "requirements.txt" }}
+              - venv-2-
       - run:
           name: Run unit test
           command: |
@@ -117,8 +117,8 @@ jobs:
           fingerprints: ["7d:a8:21:bd:bd:60:fd:a9:3b:bf:39:aa:21:ce:f1:95"]
       - restore_cache:
           keys:
-              - venv-{{ checksum "requirements.txt" }}
-              - venv-
+              - venv-2-{{ checksum "requirements.txt" }}
+              - venv-2-
       - run:
           name: Install dependencies curl, Ansible
           command: |
