@@ -45,12 +45,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-              - v3-pip-deps-{{ checksum "requirements.txt" }}
-              - v3-pip-deps-
-      - run: make setup
-      - run: make install
+              - v-pip-env-{{ checksum "requirements.txt" }}
+              - v-pip-env-
+      - run:
+          name: setup env
+          command: |
+            make setup
+            source ~/venv/bin/activate
+            make install
       - save_cache:
-          key: v3-pip-deps-{{ checksum "requirements.txt" }}
+          key: v-pip-env-{{ checksum "requirements.txt" }}
           paths:
             - ~/venv
 
@@ -60,8 +64,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-              - v3-pip-deps-{{ checksum "requirements.txt" }}
-              - v3-pip-deps-
+              - v-pip-env-{{ checksum "requirements.txt" }}
+              - v-pip-env-
       - run:
           name: Run unit test
           command: |
@@ -117,8 +121,8 @@ jobs:
           fingerprints: ["7d:a8:21:bd:bd:60:fd:a9:3b:bf:39:aa:21:ce:f1:95"]
       - restore_cache:
           keys:
-              - v3-pip-deps-{{ checksum "requirements.txt" }}
-              - v3-pip-deps-
+              - v-pip-env-{{ checksum "requirements.txt" }}
+              - v-pip-env-
       - run:
           name: Install dependencies curl, Ansible
           command: |

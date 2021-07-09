@@ -7,8 +7,7 @@
 
 setup:
 	# Create python virtualenv & source it
-	python3 -m venv ~/venv &&\
-		source ~/venv/bin/activate
+	python3 -m venv ~/venv
 
 activate_env:
 	source ~/venv/bin/activate
