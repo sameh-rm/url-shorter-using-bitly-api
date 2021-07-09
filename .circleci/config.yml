@@ -2,7 +2,7 @@ version: 2.1
 defaultDockerImage: &defaultDockerImage
   docker:
     - image: circleci/python:3.7
-    
+
 aws_image: &awsImage
   docker:
     - image: amazon/aws-cli
@@ -39,8 +39,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-              - v-pip-env-{{ checksum "requirements.txt" }}
-              - v-pip-env-
+              - venv-{{ checksum "requirements.txt" }}
+              - venv-
       - run:
           name: setup env
           command: |
@@ -49,7 +49,7 @@ jobs:
             make install
             pip freeze
       - save_cache:
-          key: v-pip-env-{{ checksum "requirements.txt" }}
+          key: venv-{{ checksum "requirements.txt" }}
           paths:
             - ~/venv
 
@@ -59,8 +59,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-              - v-pip-env-{{ checksum "requirements.txt" }}
-              - v-pip-env-
+              - venv-{{ checksum "requirements.txt" }}
+              - venv-
       - run:
           name: Run unit test
           command: |
@@ -117,8 +117,8 @@ jobs:
           fingerprints: ["7d:a8:21:bd:bd:60:fd:a9:3b:bf:39:aa:21:ce:f1:95"]
       - restore_cache:
           keys:
-              - v-pip-env-{{ checksum "requirements.txt" }}
-              - v-pip-env-
+              - venv-{{ checksum "requirements.txt" }}
+              - venv-
       - run:
           name: Install dependencies curl, Ansible
           command: |
