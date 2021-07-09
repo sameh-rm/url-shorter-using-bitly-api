@@ -16,7 +16,7 @@ activate_env:
 install:
 	# This should be run from inside a virtualenv
 	pip install --upgrade pip &&\
-		pip install -r requirements.txt
+		pip install -r requirements.txt --user
 
 install-hadolint:
 	wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.5/hadolint-Linux-x86_64
