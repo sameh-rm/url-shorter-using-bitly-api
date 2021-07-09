@@ -58,14 +58,12 @@ jobs:
     <<: *defaultDockerImage
     steps:
       - checkout
-      - run: |
-          pwd
-          ls -la 
-          ~/venv/bin/activate
       - restore_cache:
           keys:
               - v-pip-deps-{{ checksum "requirements.txt" }}
               - v-pip-deps-
+      - run: source ~/venv/bin/activate
+
       - run: python3 manage.py test
 
   deploy_infra:
