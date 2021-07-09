@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  PipelineID:
+    Description: Unique identifier.
+    Type: String
+
+Resources:
+  WebServerInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0b59bfac6be064b78
+      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref WebServerSecurityGroup
+      KeyName: udacity
+  WebServerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable port 5000
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 5000
+          ToPort: 5000
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  PublicIp:
+    Description: WebServerInstance Public IP
+    Value: !GetAtt WebServerInstance.PublicIp
+    Export:
+      Name: !Sub "${PipelineID}-PublicIp"

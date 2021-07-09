@@ -24,14 +24,13 @@ class BitlyShortener(Resource):
         else:
             to_url = jdata["to_url"]
             existed = mongo.db.urls.find_one({"to_url": to_url})
-            if existed:
+            if existed and "bitly" in existed["from_url"]:
                 return {"from_url": existed["from_url"], "code": 302}
             else:
                 try:
                     res, code = bitly_shorten(to_url)
                     mongo.db.urls.insert(
                         {"to_url": to_url, "from_url": res["link"]})
-
                     return {
                         "from_url": res["link"]
                     }, code
