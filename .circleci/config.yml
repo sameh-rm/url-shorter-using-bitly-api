@@ -66,6 +66,7 @@ jobs:
           name: Run unit test
           command: |
             source ~/venv/bin/activate
+            pip freeze
             python3 manage.py test
 
   deploy_infra:
