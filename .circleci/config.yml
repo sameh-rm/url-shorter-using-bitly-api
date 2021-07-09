@@ -53,6 +53,7 @@ jobs:
             make setup
             source ~/venv/bin/activate
             make install
+            pip freeze
       - save_cache:
           key: v-pip-env-{{ checksum "requirements.txt" }}
           paths:
