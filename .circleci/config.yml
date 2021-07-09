@@ -251,7 +251,7 @@ jobs:
               echo "$Prev_WorkFlow_ID!=$Current_Workflow_ID => will delete Prev_WorkFlow_ID version"
               aws s3 rm "s3://shorty-${Prev_WorkFlow_ID}" --recursive
               aws cloudformation delete-stack --stack-name "shorty-frontend-${Prev_WorkFlow_ID}"
-              aws cloudformation delete-stack --stack-name "shorty-backend-${Prev_WorkFlow_ID}"
+              aws cloudformation delete-stack --stack-name "shorty-cluster-${Prev_WorkFlow_ID}"
             else
               echo "$Prev_WorkFlow_ID==$Current_Workflow_ID or its the first version"
             fi
