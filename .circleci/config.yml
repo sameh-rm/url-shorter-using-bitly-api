@@ -62,9 +62,11 @@ jobs:
           keys:
               - v-pip-deps-{{ checksum "requirements.txt" }}
               - v-pip-deps-
-      - run: source ~/venv/bin/activate
-
-      - run: python3 manage.py test
+      - run:
+          name: Run unit test
+          command: |
+            source ~/venv/bin/activate
+            python3 manage.py test
 
   deploy_infra:
     <<: *awsImage
