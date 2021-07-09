@@ -44,10 +44,10 @@ jobs:
       - run:
           name: setup env
           command: |
+            apt install make
             make setup
             source ~/venv/bin/activate
             make install
-            pip freeze
       - save_cache:
           key: venv-{{ checksum "requirements.txt" }}
           paths:
