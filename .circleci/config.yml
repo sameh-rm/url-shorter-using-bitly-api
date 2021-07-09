@@ -171,6 +171,7 @@ jobs:
           command: |
             export REACT_APP_API_URL=$(curl -H "token: 12233870-e472-4eaa-a8ff-a75afd1a9a26" --request GET https://api.memstash.io/values/CLUSTER_URL)
             echo %REACT_APP_API_URL%
+            npm install
             npm run build
       - persist_to_workspace:
           root: .
