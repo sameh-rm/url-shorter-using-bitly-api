@@ -38,7 +38,7 @@ jobs:
       - run: python3 manage.py test
 
 workflows:
-  automate_flask_app:
+  shorty:
     jobs:
       - build
       - test:
