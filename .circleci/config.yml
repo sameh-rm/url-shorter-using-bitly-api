@@ -1,7 +1,11 @@
 version: 2.1
-defaultDockerImage: &defaultDockerImage
+circlePython: &circlePython
   docker:
-    - image: python:3.7.0-alpine
+    - image: circleci/python:3.7
+
+circlePython: &alpineImage
+  docker:
+    - image:  python:3.7.0-alpine
 
 aws_image: &awsImage
   docker:
@@ -34,37 +38,37 @@ commands:
 
 jobs:
   build:
-    <<: *defaultDockerImage
+    <<: *circlePython
     steps:
       - checkout
       - restore_cache:
           keys:
-              - venv-2-{{ checksum "requirements.txt" }}
-              - venv-2-
+              - venv-{{ checksum "requirements.txt" }}
+              - venv-
       - run:
           name: setup env
           command: |
-            apk add --update make
             make setup
-            sudo sh -c ~/venv/bin/activate
+            source ~/venv/bin/activate
             make install
+            pip freeze
       - save_cache:
-          key: venv-2-{{ checksum "requirements.txt" }}
+          key: venv-{{ checksum "requirements.txt" }}
           paths:
             - ~/venv
 
   test:
-    <<: *defaultDockerImage
+    <<: *circlePython
     steps:
       - checkout
       - restore_cache:
           keys:
-              - venv-2-{{ checksum "requirements.txt" }}
-              - venv-2-
+              - venv-{{ checksum "requirements.txt" }}
+              - venv-
       - run:
           name: Run unit test
           command: |
-            sudo sh -c ~/venv/bin/activate
+            source ~/venv/bin/activate
             pip3 freeze
             python manage.py test
 
@@ -108,17 +112,13 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure_infrastructure:
-    <<: *defaultDockerImage
+    <<: *alpineImage
     steps:
       # Checkout code from git
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["7d:a8:21:bd:bd:60:fd:a9:3b:bf:39:aa:21:ce:f1:95"]
-      - restore_cache:
-          keys:
-              - venv-2-{{ checksum "requirements.txt" }}
-              - venv-2-
       - run:
           name: Install dependencies curl, Ansible
           command: |
@@ -137,13 +137,14 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
+            pwd
+            ls -la
             pip install awscli
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> inventory
             cat inventory
-            printenv
             ansible-playbook -i inventory configure-server.yml
       # Here's where you will add some code to rollback on failure      
       - destroy_environment:
