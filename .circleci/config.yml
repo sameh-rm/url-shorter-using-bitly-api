@@ -44,7 +44,7 @@ jobs:
       - run:
           name: setup env
           command: |
-            apt install make
+            apk add --update make
             make setup
             source ~/venv/bin/activate
             make install
