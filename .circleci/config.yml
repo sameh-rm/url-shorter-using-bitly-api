@@ -18,9 +18,9 @@ jobs:
       - run: make activate_env
       - run: make install
       - save_cache:
-          key: "v-pip-deps-{{ checksum "requirements.txt" }}"
+          key: v-pip-deps-{{ checksum "requirements.txt" }}
           paths:
-            - /env
+            - ~/venv
 
   test:
     <<: *defaultDockerImage
@@ -28,7 +28,9 @@ jobs:
       - checkout
       - run: make activate_env
       - restore_cache:
-          key: "v-pip-deps-{{ checksum "requirements.txt" }}"
+          keys:
+              - v-pip-deps-{{ checksum "requirements.txt" }}
+              - v-pip-deps-
       - run: python3 manage.py test
 
 workflows:
