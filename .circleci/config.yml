@@ -16,7 +16,7 @@ aws_image: &awsImage
 node_image: &nodeImage
   docker:
     - image: circleci/node:13.8.0
-    
+
 commands:
   destroy_environment:
     description: Destroy cluster and frontend cloudformation stacks given a workflow ID.
@@ -104,7 +104,7 @@ jobs:
       - destroy_environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
-  configure-infrastructure:
+  configure_infrastructure:
     <<: *defaultDockerImage
     steps:
       # Checkout code from git
@@ -148,7 +148,7 @@ jobs:
       - destroy_environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
-  deploy-frontend:
+  deploy_frontend:
     <<: *nodeImage
     steps:
       # Checkout code from git
@@ -186,3 +186,12 @@ workflows:
       - test:
           requires:
             - build
+      - deploy_infra:
+          requires:
+            - test
+      - configure_infrastructure:
+          requires:
+            - deploy_infra
+      - deploy_frontend:
+          requires:
+            - configure_infrastructure
