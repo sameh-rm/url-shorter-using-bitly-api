@@ -59,9 +59,9 @@ jobs:
     steps:
       - checkout
       - run: |
-      pwd
-      ls -la 
-      source ~/venv/bin/activate
+          pwd
+          ls -la 
+          source ~/venv/bin/activate
       - restore_cache:
           keys:
               - v-pip-deps-{{ checksum "requirements.txt" }}
