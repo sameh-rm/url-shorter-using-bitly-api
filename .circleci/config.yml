@@ -8,13 +8,15 @@ defaultDockerImage: &defaultDockerImage
         MONGO_TEST_URI: ${MONGO_TEST_URI}
         DOMAIN: ${DOMAIN}
         ACCESS_TOKEN: ${ACCESS_TOKEN}
-
 aws_image: &awsImage
   docker:
     - image: amazon/aws-cli
       environment:
         ACCESS_TOKEN: ${ACCESS_TOKEN}
-
+node_image: &nodeImage
+  docker:
+    - image: circleci/node:13.8.0
+    
 commands:
   destroy_environment:
     description: Destroy cluster and frontend cloudformation stacks given a workflow ID.
@@ -103,7 +105,7 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure-infrastructure:
-    <<: *alpineImage
+    <<: *defaultDockerImage
     steps:
       # Checkout code from git
       - checkout
