@@ -14,6 +14,10 @@ jobs:
     <<: *defaultDockerImage
     steps:
       - checkout
+      - restore_cache:
+          keys:
+              - v-pip-deps-{{ checksum "requirements.txt" }}
+              - v-pip-deps-
       - run: make setup
       - run: make activate_env
       - run: make install
