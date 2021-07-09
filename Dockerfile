@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.7.11-buster
 LABEL author="Sameh Ramadan"
 
 COPY ./requirements.txt /app/requirements.txt
@@ -8,19 +8,19 @@ WORKDIR /app
 
 ENV SECRET_KEY=secret
 ENV MONGO_USERNAME=admin
-ENV MONGO_PASSWORD=testadmin
-ENV MONGO_URI=${MONGO_URI}
-# mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty
-ENV MONGO_TEST_URI=${MONGO_TEST_URI}
-# mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty_test
-ENV DOMAIN=${DOMAIN}
+ENV MONGO_PASSWORD=p7S9czNlzz3kzpDi
+ENV MONGO_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty
+ENV MONGO_TEST_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.mongodb.net/shorty_test
+ENV DOMAIN=localhost:5000
 ENV ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
-RUN make setup
-RUN make install
-RUN source ~/.devops/bin/activate
-RUN python3 -m pip install -r requirements.txt
+
+RUN apt-get update && apt-get install make
+
 COPY . /app/
 
+RUN make setup
+RUN make install
+RUN make test
 
 EXPOSE 5000
 

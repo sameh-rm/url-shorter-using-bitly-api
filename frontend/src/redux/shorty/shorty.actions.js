@@ -25,7 +25,7 @@ export const shortenLink = (link, api) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.post(
-      `http://ec2-18-188-125-35.us-east-2.compute.amazonaws.com/api/${api}/`,
+      `${process.env.REACT_APP_API_URL}/api/${api}/`,
       {
         to_url: link,
       },

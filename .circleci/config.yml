@@ -9,6 +9,33 @@ defaultDockerImage: &defaultDockerImage
         DOMAIN: ${DOMAIN}
         ACCESS_TOKEN: ${ACCESS_TOKEN}
 
+aws_image: &awsImage
+  docker:
+    - image: amazon/aws-cli
+      environment:
+        ACCESS_TOKEN: ${ACCESS_TOKEN}
+
+commands:
+  destroy_environment:
+    description: Destroy cluster and frontend cloudformation stacks given a workflow ID.
+    parameters:
+        workflow_id:
+          type: string
+    steps:
+      - run:
+          name: Destroy cluster infrastructure
+          # Add when this will run
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name shorty-cluster-<< parameters.workflow_id >>
+      - run:
+          name: Destroy frontend infrastructure and S3 bucket
+          # Add when this will run
+          when: on_fail
+          command: |
+            aws s3 rm s3://shorty-<< parameters.workflow_id >> --recursive
+            aws cloudformation delete-stack --stack-name shorty-frontend-<< parameters.workflow_id >>
+
 jobs:
   build:
     <<: *defaultDockerImage
@@ -36,6 +63,120 @@ jobs:
               - v-pip-deps-
       - run: python3 manage.py test
 
+  deploy_infra:
+    <<: *awsImage
+    steps:
+      - checkout
+      - run:
+          name: Ensure back-end infrastructure exists
+          working_directory: ./.circleci/files
+          command: |
+            yum install -y tar gzip
+            aws cloudformation deploy \
+              --template-file shorty-cluster.yml \
+              --stack-name "shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}
+      - run:
+          name: PUT EC2 Public IP >>  memstash
+          # Get the shorty-cluster public IP
+          # Put the public IP into memstash 
+          command: |
+            CLUSTER_IP=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text)
+            curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
+            --request PUT --data "http://$CLUSTER_IP:5000" https://api.memstash.io/values/CLUSTER_URL
+      
+      - run:
+          name: Ensure front-end infrastructure exist
+          working_directory: ./.circleci/files
+          command: |
+            aws cloudformation deploy \
+              --template-file frontend.yml \
+              --stack-name "shorty-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=shorty-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+
+      - destroy_environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  configure-infrastructure:
+    <<: *alpineImage
+    steps:
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints: ["7d:a8:21:bd:bd:60:fd:a9:3b:bf:39:aa:21:ce:f1:95"]
+      - restore_cache:
+          keys:
+              - v-pip-deps-{{ checksum "requirements.txt" }}
+              - v-pip-deps-
+      - run:
+          name: Install dependencies curl, Ansible
+          command: |
+            apk --no-cache add curl
+            apk add --update ansible
+            ansible --version
+            
+      - run:
+          name: Install AWS CLI dependencies
+          working_directory: /tmp
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            ./aws/install
+      - run:
+          name: Configure server
+          working_directory: ./.circleci/ansible
+          command: |
+            pwd
+            ls -la
+            pip install awscli
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text >> inventory
+            cat inventory
+            printenv
+            ansible-playbook -i inventory configure-server.yml
+      # Here's where you will add some code to rollback on failure      
+      - destroy_environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  deploy-frontend:
+    <<: *nodeImage
+    steps:
+      # Checkout code from git
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install AWS CLI dependencies
+          working_directory: /tmp
+          command: |
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      - run:
+          name: Get backend url
+          working_directory: ./frontend
+          command: |
+            export REACT_APP_API_URL=$(curl -H "token: 12233870-e472-4eaa-a8ff-a75afd1a9a26" --request GET https://api.memstash.io/values/CLUSTER_URL)
+            echo %REACT_APP_API_URL%
+            npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - frontend/build
+      - run:
+          name: Deploy frontend objects
+          working_directory: ./frontend
+          command: |
+            aws s3 rm s3://shorty-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive && aws s3 cp ./build s3://shorty-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive --acl public-read
 workflows:
   shorty:
     jobs:

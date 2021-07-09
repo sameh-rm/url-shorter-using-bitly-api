@@ -1,0 +1,31 @@
+---
+  - name: "update apt packages."
+    become: yes
+    apt:
+      update_cache: yes
+
+  - name: "upgrade packages"
+    become: yes
+    apt:
+      upgrade: yes
+
+  - name: "remove dependencies that are no longer required"
+    become: yes
+    apt:
+      autoremove: yes
+
+  - name: "install make"
+    become: yes
+    apt:
+      name: ["make"]
+      update_cache: yes
+
+  - name: "install make"
+    become: yes
+    make:
+      name: ["install-all", "start_minikube"]
+      update_cache: yes
+
+  - name: "install nodejs 13.8.0"
+    become: yes
+    shell: ./run_kubernetes

@@ -13,10 +13,15 @@ Resources:
       SecurityGroups:
         - !Ref WebServerSecurityGroup
       KeyName: udacity
+      Tags:
+        - Key: Name
+          Value: !Sub shorty-cluster-${PipelineID}
+
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: Enable port 5000
+      GroupName: !Sub shorty-${PipelineID}
+      GroupDescription: Allow port 22 and port 5000.
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22

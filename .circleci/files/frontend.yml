@@ -4,6 +4,7 @@ Parameters:
   PipelineID:
     Description: Unique identifier.
     Type: String
+    Default: 123
 
 Resources:
   WebsiteBucket:

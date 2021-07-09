@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy":"http://localhost:5000",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -26,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "react-scripts build && aws s3 rm s3://url-shorter-frontend/ --recursive && aws s3 cp ./build s3://url-shorter-frontend/ --recursive --acl public-read"
+    "deploy": "react-scripts build && aws s3 rm s3://shorty-${REACT_APP_API_URL}/ --recursive && aws s3 cp ./build s3://shorty-${REACT_APP_API_URL}/ --recursive --acl public-read"
   },
   "eslintConfig": {
     "extends": [

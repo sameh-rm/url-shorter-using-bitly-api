@@ -15,4 +15,6 @@ kubectl create deployment shorty --image=$dockerpath --port=5000
 kubectl get deployments
 # Step 4:
 # Forward the container port to a host
+ping google.com
+ping google.com
 kubectl port-forward deployment/shorty 5000:5000 & echo started

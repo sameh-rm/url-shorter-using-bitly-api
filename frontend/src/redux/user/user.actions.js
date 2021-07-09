@@ -30,7 +30,7 @@ export const register =
         },
       };
       const { data } = await axios.post(
-        "http://ec2-18-188-125-35.us-east-2.compute.amazonaws.com/api/users/",
+        `${process.env.REACT_APP_API_URL}/api/users/`,
         {
           username,
           password,
@@ -54,8 +54,9 @@ export const login = (username, password) => async (dispatch, getState) => {
         "Content-Type": "application/json",
       },
     };
+  
     const { data } = await axios.post(
-      "http://ec2-18-188-125-35.us-east-2.compute.amazonaws.com/api/users/login",
+      `${process.env.REACT_APP_API_URL}/api/users/login`,
       {
         username,
         password,
