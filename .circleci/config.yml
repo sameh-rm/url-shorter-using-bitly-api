@@ -1,7 +1,7 @@
 version: 2.1
 defaultDockerImage: &defaultDockerImage
   docker:
-    - image: circleci/python:3.7
+    - image: python:3.7.0-alpine
 
 aws_image: &awsImage
   docker:
