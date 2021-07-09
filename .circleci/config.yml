@@ -169,8 +169,10 @@ jobs:
           name: Get backend url
           working_directory: ./frontend
           command: |
-            export REACT_APP_API_URL=$(curl -H "token: 12233870-e472-4eaa-a8ff-a75afd1a9a26" --request GET https://api.memstash.io/values/CLUSTER_URL)
-            echo %REACT_APP_API_URL%
+            pwd
+            ls -la
+            export REACT_APP_API_URL=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/CLUSTER_URL)
+            echo ${REACT_APP_API_URL}
             npm install
             npm run build
       - persist_to_workspace:
@@ -182,6 +184,80 @@ jobs:
           working_directory: ./frontend
           command: |
             aws s3 rm s3://shorty-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive && aws s3 cp ./build s3://shorty-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive --acl public-read
+
+  smoke-test:
+    <<: *alpineImage
+    steps:
+      # Checkout code from git
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update curl nodejs npm
+            pip install awscli
+      - run:
+          name: Get cluster url & smoke test
+          working_directory: .
+          command: |
+            export CLUSTER_URL=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/CLUSTER_URL)
+            curl "$CLUSTER_URL/api/status"
+      - run:
+          name: frontend smoke test.
+          command: |
+            URL="http://shorty-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-2.amazonaws.com/index.html"
+            curl -s ${URL} | grep "shorty"
+      # Here's where you will add some code to rollback on failure  
+      - destroy_environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  cloudfront-update:
+    <<: *awsImage
+    steps:
+      # Checkout code from git
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip curl
+            curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+      - run:
+          name: Store old WorkflowID in memstash 
+          working_directory: ./.circleci/files
+          command: |
+            WorkflowID=$(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --no-paginate --output text)
+            curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" --request PUT --data "$WorkflowID" https://api.memstash.io/values/WorkflowID
+      - run:
+          name: Update cloudfront distribution
+          working_directory: ./.circleci/files
+          command: |
+            aws cloudformation deploy \
+              --template-file cloudfront.yml \
+              --stack-name shorty-cloudfront-production \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=shorty
+      # Here's where you will add some code to rollback on failure  
+      - revert_migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  cleanup:
+    <<: *awsImage
+    steps:
+      - checkout
+      - run:
+          name: Clean up old environment
+          command: |
+            Prev_WorkFlow_ID=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/WorkflowID)
+            Current_Workflow_ID=${CIRCLE_WORKFLOW_ID:0:7}
+            if [[ ! -z "$Prev_WorkFlow_ID" && "$Current_Workflow_ID" != "$Prev_WorkFlow_ID" ]]
+            then  
+              echo "$Prev_WorkFlow_ID!=$Current_Workflow_ID => will delete Prev_WorkFlow_ID version"
+              aws s3 rm "s3://shorty-${Prev_WorkFlow_ID}" --recursive
+              aws cloudformation delete-stack --stack-name "shorty-frontend-${Prev_WorkFlow_ID}"
+              aws cloudformation delete-stack --stack-name "shorty-backend-${Prev_WorkFlow_ID}"
+            else
+              echo "$Prev_WorkFlow_ID==$Current_Workflow_ID or its the first version"
+            fi
+    
 workflows:
   shorty:
     jobs:
@@ -198,3 +274,12 @@ workflows:
       - deploy_frontend:
           requires:
             - configure_infrastructure
+      - smoke-test:
+          requires:
+              - deploy_frontend
+      - cloudfront-update:
+          requires:
+              - smoke-test
+      - cleanup
+          requires:
+              - cloudfront-update
