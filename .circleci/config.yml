@@ -19,7 +19,6 @@ jobs:
               - v-pip-deps-{{ checksum "requirements.txt" }}
               - v-pip-deps-
       - run: make setup
-      - run: source ~/venv/bin/activate
       - run: make install
       - save_cache:
           key: v-pip-deps-{{ checksum "requirements.txt" }}
