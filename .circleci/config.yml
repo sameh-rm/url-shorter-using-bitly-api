@@ -2,17 +2,11 @@ version: 2.1
 defaultDockerImage: &defaultDockerImage
   docker:
     - image: circleci/python:3.7
-      environment:
-        SECRET_KEY: ${SECRET_KEY}
-        MONGO_URI: ${MONGO_URI}
-        MONGO_TEST_URI: ${MONGO_TEST_URI}
-        DOMAIN: ${DOMAIN}
-        ACCESS_TOKEN: ${ACCESS_TOKEN}
+    
 aws_image: &awsImage
   docker:
     - image: amazon/aws-cli
-      environment:
-        ACCESS_TOKEN: ${ACCESS_TOKEN}
+
 node_image: &nodeImage
   docker:
     - image: circleci/node:13.8.0
