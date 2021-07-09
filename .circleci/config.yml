@@ -46,7 +46,7 @@ jobs:
           command: |
             apk add --update make
             make setup
-            sh -c ~/venv/bin/activate
+            sudo sh -c ~/venv/bin/activate
             make install
       - save_cache:
           key: venv-2-{{ checksum "requirements.txt" }}
@@ -64,7 +64,7 @@ jobs:
       - run:
           name: Run unit test
           command: |
-            sh -c ~/venv/bin/activate
+            sudo sh -c ~/venv/bin/activate
             pip3 freeze
             python manage.py test
 
