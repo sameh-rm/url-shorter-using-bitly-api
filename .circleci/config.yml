@@ -78,7 +78,7 @@ jobs:
           command: |
             yum install -y tar gzip
             aws cloudformation deploy \
-              --template-file shorty-cluster.yml \
+              --template-file cluster.yml \
               --stack-name "shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}
