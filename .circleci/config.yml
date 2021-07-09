@@ -14,19 +14,21 @@ jobs:
     <<: *defaultDockerImage
     steps:
       - checkout
-      - run: python3 -m venv env
-      - run: pip3 install -r requirements.txt --user
+      - run: make setup
+      - run: make activate_env
+      - run: make install
       - save_cache:
-          key: "python-env"
+          key: "v-pip-deps-{{ checksum "requirements.txt" }}"
           paths:
             - /env
+
   test:
     <<: *defaultDockerImage
     steps:
       - checkout
+      - run: make activate_env
       - restore_cache:
-          key: "python-env"
-      - run: pip3 install -r requirements.txt --user
+          key: "v-pip-deps-{{ checksum "requirements.txt" }}"
       - run: python3 manage.py test
 
 workflows:
