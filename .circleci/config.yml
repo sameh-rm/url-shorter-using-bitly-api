@@ -46,7 +46,7 @@ jobs:
           command: |
             apk add --update make
             make setup
-            ~/venv/bin/activate
+            bash ~/venv/bin/activate
             make install
       - save_cache:
           key: venv-{{ checksum "requirements.txt" }}
@@ -64,7 +64,7 @@ jobs:
       - run:
           name: Run unit test
           command: |
-            ~/venv/bin/activate
+            bash ~/venv/bin/activate
             pip3 freeze
             python manage.py test
 
@@ -137,8 +137,6 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            pwd
-            ls -la
             pip install awscli
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
