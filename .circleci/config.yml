@@ -61,7 +61,7 @@ jobs:
       - run: |
           pwd
           ls -la 
-          source ~/venv/bin/activate
+          ~/venv/bin/activate
       - restore_cache:
           keys:
               - v-pip-deps-{{ checksum "requirements.txt" }}
