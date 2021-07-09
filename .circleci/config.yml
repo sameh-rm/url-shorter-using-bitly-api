@@ -3,7 +3,7 @@ circlePython: &circlePython
   docker:
     - image: circleci/python:3.7
 
-circlePython: &alpineImage
+alpineImage: &alpineImage
   docker:
     - image:  python:3.7.0-alpine
 
