@@ -1,7 +1,7 @@
 ---
 - name: Configure shorty infrastructure
   hosts: web
-  user: ec2-user
+  user: ubuntu
   gather_facts: false
   vars:
     - ansible_python_interpreter: /usr/bin/python3
