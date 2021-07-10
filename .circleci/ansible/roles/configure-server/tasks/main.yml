@@ -39,3 +39,7 @@
     make:
       chdir: .
       target: "deploy"
+
+  - name: "run shorty service"
+    become: true
+    shell: minikube service shorty-service
