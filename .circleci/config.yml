@@ -15,6 +15,10 @@ node_image: &nodeImage
   docker:
     - image: circleci/node:13.8.0
 
+docker_image: &dockerImage
+  docker:
+    - image: docker:17.05.0-ce-git
+
 commands:
   destroy_environment:
     description: Destroy cluster and frontend cloudformation stacks given a workflow ID.
@@ -71,6 +75,19 @@ jobs:
             source ~/venv/bin/activate
             pip3 freeze
             python manage.py test
+
+  update_image:
+    <<: *dockerImage
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+              - venv-{{ checksum "requirements.txt" }}
+              - venv-
+      - run:
+          name: Run unit test
+          command: |
+            docker git commit shorty
 
   deploy_infra:
     <<: *awsImage

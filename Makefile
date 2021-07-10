@@ -48,5 +48,5 @@ run_kubes:
 	ping google.com
 	ping google.com
 	kubectl port-forward deployment/shorty 5000:5000 & echo started
-	
+
 all: install lint test

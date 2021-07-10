@@ -22,8 +22,13 @@
 
   - name: "install make"
     become: yes
-    make:
-      name: ["install-all", "start_minikube"]
+    make: 
+      target: "install-all"
+
+  - name: "Start Minikube"
+    become: yes
+    make: 
+      target: "start_minikube"
 
   - name: "Run Kubes"
     become: yes
