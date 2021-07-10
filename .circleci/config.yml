@@ -193,7 +193,7 @@ jobs:
             aws cloudformation deploy \
               --template-file cloudfront.yml \
               --stack-name shorty-cloudfront-production \
-              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=shorty-${CIRCLE_WORKFLOW_ID:0:7}
 
   cleanup:
