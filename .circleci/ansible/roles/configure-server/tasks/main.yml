@@ -33,4 +33,4 @@
   - name: "Run Kubes"
     become: yes
     make:
-      name: ["run_kubes"]
+      target: "run_kubes"
