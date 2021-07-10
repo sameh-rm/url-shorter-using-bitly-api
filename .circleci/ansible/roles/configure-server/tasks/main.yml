@@ -1,36 +1,45 @@
 ---
   - name: "update apt packages."
     become: yes
-    apt:
+    apt-get:
       update_cache: yes
 
   - name: "upgrade packages"
     become: yes
-    apt:
+    apt-get:
       upgrade: yes
 
   - name: "remove dependencies that are no longer required"
     become: yes
-    apt:
+    apt-get:
       autoremove: yes
+
+  - name: "add node exporter configuration."
+    become: true
+    copy:
+      src: Makefile
+      dest: .
 
   - name: "install make"
     become: yes
-    apt:
+    apt-get:
       name: ["make"]
       update_cache: yes
 
   - name: "install make"
     become: yes
-    make: 
+    make:
+      chdir: .
       target: "install-all"
 
   - name: "Start Minikube"
     become: yes
     make: 
+      chdir: .
       target: "start_minikube"
 
   - name: "Run Kubes"
     become: yes
     make:
+      chdir: .
       target: "run_kubes"
