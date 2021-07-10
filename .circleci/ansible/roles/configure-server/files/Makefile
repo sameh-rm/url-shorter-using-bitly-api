@@ -59,7 +59,7 @@ lint:
 	pylint --disable=R,C,W1203 app.py
 
 start_minikube:
-	minikube start
+	sudo minikube start
 
 run_kubes:
 	sudo kubectl create deployment shorty --image=urokai/udacity-cloud-devops-capestone --port=5000
