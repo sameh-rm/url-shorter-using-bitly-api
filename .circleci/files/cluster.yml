@@ -36,7 +36,6 @@ Resources:
             sudo usermod -aG docker ubuntu && newgrp docker
             sudo wget -O /bin/minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
             sudo chmod +x /bin/minikube
-            minikube start
             sudo snap install kubectl --classic
 
   WebServerSecurityGroup:
