@@ -108,8 +108,8 @@ jobs:
               --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=shorty-${CIRCLE_WORKFLOW_ID:0:7}
 
-      # - destroy_environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy_environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure_infrastructure:
     <<: *alpineImage
@@ -133,12 +133,11 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             ./aws/install
+
       - run:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            pwd
-            ls -la
             pip install awscli
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
@@ -147,8 +146,8 @@ jobs:
             cat inventory
             ansible-playbook -i inventory configure-server.yml
       # Here's where you will add some code to rollback on failure      
-      # - destroy_environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy_environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   deploy_frontend:
     <<: *nodeImage

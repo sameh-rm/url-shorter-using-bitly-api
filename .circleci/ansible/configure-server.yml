@@ -1,6 +1,6 @@
 ---
 - name: Configure shorty infrastructure
-  hosts: all
+  hosts: web
   user: ubuntu
   gather_facts: false
   vars:
