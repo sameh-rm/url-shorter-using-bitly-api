@@ -24,7 +24,6 @@
     become: yes
     make:
       name: ["install-all", "start_minikube"]
-      update_cache: yes
 
   - name: "install nodejs 13.8.0"
     become: yes
