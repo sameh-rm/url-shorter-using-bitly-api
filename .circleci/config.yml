@@ -59,7 +59,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run unit test
+          name: running hadolint
           command: |
             make install-hadolint
             make lint
