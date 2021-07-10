@@ -29,6 +29,5 @@ spec:
       containers:
       - name: shorty
         image: urokai/udacity-cloud-devops-capestone
-        imagePullPolicy: Never
         ports:
         - containerPort: 5000

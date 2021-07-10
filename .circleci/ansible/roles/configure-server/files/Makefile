@@ -59,9 +59,10 @@ lint:
 	pylint --disable=R,C,W1203 app.py
 
 start_minikube:
-	sudo minikube start
+	minikube start
+
 deploy:
-	kubectl apply -f deployment.yaml
+	kubectl apply -f deployment.yml
 	sudo kubectl get pods
 
 run_kubes:
