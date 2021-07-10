@@ -54,6 +54,15 @@ jobs:
           key: venv-{{ checksum "requirements.txt" }}
           paths:
             - ~/venv
+  lint:
+    <<: *circlePython
+    steps:
+      - checkout
+      - run:
+          name: Run unit test
+          command: |
+            make install-hadolint
+            make lint
 
   test:
     <<: *circlePython
