@@ -25,6 +25,7 @@
     make:
       name: ["install-all", "start_minikube"]
 
-  - name: "install nodejs 13.8.0"
+  - name: "Run Kubes"
     become: yes
-    shell: ./run_kubernetes
+    make:
+      name: ["run_kubes"]
