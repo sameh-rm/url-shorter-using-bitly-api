@@ -66,9 +66,9 @@ deploy:
 	sudo kubectl get pods
 
 run_kubes:
-	sudo kubectl create deployment shorty --image=urokai/udacity-cloud-devops-capestone --port=5000
-	sudo kubectl get deployments
+	kubectl create deployment shorty --image=urokai/udacity-cloud-devops-capestone --port=5000
+	kubectl get deployments
 	ping google.com -c 35
-	sudo kubectl port-forward deployment/shorty 5000:5000
+	kubectl port-forward deployment/shorty 5000:5000
 
 all: install lint test

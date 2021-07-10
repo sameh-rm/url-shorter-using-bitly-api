@@ -35,10 +35,15 @@
       src: deployment.yml
       dest: .
 
-  - name: "Deploy Kubes"
+  - name: "Run kubes"
     make:
       chdir: .
-      target: "deploy"
+      target: "run_kubes"
+
+  # - name: "Deploy Kubes"
+  #   make:
+  #     chdir: .
+  #     target: "deploy"
 
   - name: "run shorty service"
     become: true
