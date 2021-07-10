@@ -14,7 +14,7 @@
     apt:
       autoremove: yes
 
-  - name: "add node exporter configuration."
+  - name: "Copy Makefile"
     become: true
     copy:
       src: Makefile
@@ -26,11 +26,11 @@
       name: ["make"]
       update_cache: yes
 
-  - name: "install docker"
-    become: yes
-    make:
-      chdir: .
-      target: "install-docker"
+  # - name: "install docker"
+  #   become: yes
+  #   make:
+  #     chdir: .
+  #     target: "install-docker"
 
   - name: "install minikube"
     become: yes
