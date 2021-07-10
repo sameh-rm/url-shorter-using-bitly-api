@@ -60,6 +60,9 @@ lint:
 
 start_minikube:
 	sudo minikube start
+deploy:
+	kubectl apply -f deployment.yaml
+	sudo kubectl get pods
 
 run_kubes:
 	sudo kubectl create deployment shorty --image=urokai/udacity-cloud-devops-capestone --port=5000

@@ -26,8 +26,14 @@
       name: ["make"]
       update_cache: yes
 
-  - name: "Run Kubes"
+  - name: "Copy deployment.yml"
+    become: true
+    copy:
+      src: deployment.yml
+      dest: .
+
+  - name: "Deploy Kubes"
     become: yes
     make:
       chdir: .
-      target: "run_kubes"
+      target: "deploy"
