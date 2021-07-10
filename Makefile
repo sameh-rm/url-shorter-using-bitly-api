@@ -38,7 +38,7 @@ install-docker:
 	$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 	sudo apt-get update
-	sudo apt-get install docker-ce docker-ce-cli containerd.io -Y
+	sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 	
 install-minikube:
 	wget -O /bin/minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
