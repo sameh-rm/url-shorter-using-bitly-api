@@ -21,17 +21,11 @@ docker_image: &dockerImage
 
 commands:
   destroy_environment:
-    description: Destroy cluster and frontend cloudformation stacks given a workflow ID.
+    description: frontend cloudformation stacks given a workflow ID.
     parameters:
         workflow_id:
           type: string
     steps:
-      - run:
-          name: Destroy cluster infrastructure
-          # Add when this will run
-          when: on_fail
-          command: |
-            aws cloudformation delete-stack --stack-name shorty-cluster-<< parameters.workflow_id >>
       - run:
           name: Destroy frontend infrastructure and S3 bucket
           # Add when this will run
@@ -101,7 +95,7 @@ jobs:
               --filters "Name=tag:project,Values=shorty-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
-            --request PUT --data "http://a67d25a5dbcc6421086a38c8ca8b31dc-1727363491.us-east-2.elb.amazonaws.com/" https://api.memstash.io/values/API_URL
+            --request PUT --data "http://a67d25a5dbcc6421086a38c8ca8b31dc-1727363491.us-east-2.elb.amazonaws.com" https://api.memstash.io/values/API_URL
       
       - run:
           name: Ensure frontend infrastructure exist
@@ -171,7 +165,7 @@ jobs:
           name: frontend smoke test.
           command: |
             URL="http://shorty-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-2.amazonaws.com/index.html"
-            curl -s ${URL} | grep "shorty"
+            curl -s ${URL} | grep "Loading"
       # Here's where you will add some code to rollback on failure  
       - destroy_environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
