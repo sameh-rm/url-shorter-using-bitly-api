@@ -26,11 +26,23 @@
       name: ["make"]
       update_cache: yes
 
-  - name: "install make"
+  - name: "install docker"
     become: yes
     make:
       chdir: .
-      target: "install-all"
+      target: "install-docker"
+
+  - name: "install hadolint"
+    become: yes
+    make:
+      chdir: .
+      target: "install-hadolint"
+
+  - name: "install minikube"
+    become: yes
+    make:
+      chdir: .
+      target: "install-minikube"
 
   - name: "Start Minikube"
     become: yes

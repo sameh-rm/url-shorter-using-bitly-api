@@ -29,7 +29,7 @@ install-minikube:
 	chmod +x /bin/minikube
 	minikube start
 	
-install-all: install-docker install-minikube install-hadolint
+install-all: install-minikube install-hadolint
 
 test:
 	python3 manage.py test
