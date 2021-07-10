@@ -32,12 +32,6 @@
       chdir: .
       target: "install-docker"
 
-  - name: "install hadolint"
-    become: yes
-    make:
-      chdir: .
-      target: "install-hadolint"
-
   - name: "install minikube"
     become: yes
     make:
