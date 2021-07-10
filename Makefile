@@ -45,7 +45,7 @@ install-minikube:
 	chmod +x /bin/minikube
 	minikube version 
 	minikube start --driver=docker
-	
+
 install-all: install-minikube install-hadolint
 
 test:
