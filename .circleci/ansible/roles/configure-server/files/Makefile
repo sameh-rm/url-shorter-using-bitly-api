@@ -24,7 +24,7 @@ install-hadolint:
 install-minikube:
 	wget -O /bin/minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 	chmod +x /bin/minikube
-	minikube start -Y
+	minikube start
 	
 install-all: install-minikube install-hadolint
 
