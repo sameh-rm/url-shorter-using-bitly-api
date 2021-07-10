@@ -227,9 +227,11 @@ workflows:
   shorty:
     jobs:
       - build
+      - lint
       - test:
           requires:
             - build
+            - lint
       - deploy_infra:
           requires:
             - test
