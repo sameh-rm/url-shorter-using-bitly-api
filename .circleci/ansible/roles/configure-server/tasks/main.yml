@@ -26,24 +26,6 @@
       name: ["make"]
       update_cache: yes
 
-  # - name: "install docker"
-  #   become: yes
-  #   make:
-  #     chdir: .
-  #     target: "install-docker"
-
-  - name: "install minikube"
-    become: yes
-    make:
-      chdir: .
-      target: "install-minikube"
-
-  - name: "Start Minikube"
-    become: yes
-    make: 
-      chdir: .
-      target: "start_minikube"
-
   - name: "Run Kubes"
     become: yes
     make:
