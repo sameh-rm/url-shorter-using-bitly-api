@@ -29,10 +29,6 @@ Resources:
           Resource: !Join ['', ['arn:aws:s3:::', !Ref 'WebsiteBucket', /*]]
 
 Outputs:
-  PipelineID:
-    Value: !Sub ${PipelineID}
-    Export:
-      Name: PipelineID
   WebsiteURL:
     Value: !GetAtt
       - WebsiteBucket
