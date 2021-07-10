@@ -27,7 +27,6 @@
       update_cache: yes
 
   - name: "start_minikube"
-    become: true
     shell: minikube start
 
   - name: "Copy deployment.yml"
