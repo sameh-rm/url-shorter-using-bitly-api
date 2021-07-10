@@ -1,17 +1,17 @@
 ---
   - name: "update apt packages."
     become: yes
-    apt-get:
+    apt:
       update_cache: yes
 
   - name: "upgrade packages"
     become: yes
-    apt-get:
+    apt:
       upgrade: yes
 
   - name: "remove dependencies that are no longer required"
     become: yes
-    apt-get:
+    apt:
       autoremove: yes
 
   - name: "add node exporter configuration."
@@ -22,7 +22,7 @@
 
   - name: "install make"
     become: yes
-    apt-get:
+    apt:
       name: ["make"]
       update_cache: yes
 
