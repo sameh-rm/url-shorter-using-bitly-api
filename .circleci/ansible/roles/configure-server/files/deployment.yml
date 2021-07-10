@@ -1,30 +1,36 @@
-apiVersion: v1
-kind: Ingress
-metadata:
-  name: shorty-ingress
-spec:
-  defaultBackend:
-    service:
-      name: shorty
-      port:
-        number: 5000
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shorty
+  name: flaskapi-deployment
+  labels:
+    app: flaskapi
 spec:
+  replicas: 3
   selector:
     matchLabels:
-      app: shorty
+      app: flaskapi
   template:
     metadata:
       labels:
-        app: shorty
+        app: flaskapi
     spec:
       containers:
-      - name: shorty
-        image: urokai/udacity-cloud-devops-capestone
-        ports:
-        - containerPort: 5000
+        - name: flaskapi
+          image: flask-api
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: flaskapi
+  type: LoadBalancer
