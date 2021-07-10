@@ -41,10 +41,9 @@ install-docker:
 	sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 
 install-minikube:
-	wget -O /bin/minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-	chmod +x /bin/minikube
-	minikube version 
-	minikube start --driver=docker
+	sudo wget -O /bin/minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+	sudo chmod +x /bin/minikube
+	sudo minikube version 
 
 install-all: install-minikube install-hadolint
 
@@ -60,13 +59,12 @@ lint:
 	pylint --disable=R,C,W1203 app.py
 
 start_minikube:
-	minikube start -Y
+	minikube start
 
 run_kubes:
-	kubectl create deployment shorty --image=urokai/udacity-cloud-devops-capestone --port=5000
-	kubectl get deployments
-	ping google.com
-	ping google.com
-	kubectl port-forward deployment/shorty 5000:5000 & echo started
+	sudo kubectl create deployment shorty --image=urokai/udacity-cloud-devops-capestone --port=5000
+	sudo kubectl get deployments
+	ping google.com -c 20
+	sudo kubectl port-forward deployment/shorty 5000:5000 & echo started
 
 all: install lint test
