@@ -88,14 +88,14 @@ jobs:
               - venv-{{ checksum "requirements.txt" }}
               - venv-
       - run:
-          name: docker login
+          name: Update Docker Image
           command: |
-            sudo docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
-            sudo docker build --tag=shorty .
-            sudo docker run  -d  -m "1G" \
+            docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+            docker build --tag=shorty .
+            docker run  -d  -m "1G" \
               -p5000:5000  --name shorty shorty
-            sudo docker commit shorty urokai/shorty
-            sudo docker push shorty urokai/shorty
+            docker commit shorty urokai/shorty
+            docker push shorty urokai/shorty
 
   deploy_infra:
     <<: *awsImage
