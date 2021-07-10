@@ -91,6 +91,7 @@ jobs:
           name: Update Docker Image
           command: |
             docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+            docker version
             docker build --tag=shorty .
             docker run  -d  -m "1G" \
               -p5000:5000  --name shorty shorty
