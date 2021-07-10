@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udacity-shorty
+  labels:
+    app: shorty
+spec:
+  selector:
+    matchLabels:
+      app: shorty
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: shorty
+    spec:
+      containers:
+      - name: shorty
+        image: urokai/shorty
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 80

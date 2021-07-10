@@ -94,29 +94,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Ensure back-end infrastructure exists
-          working_directory: ./.circleci/files
-          command: |
-            yum install -y tar gzip
-            aws cloudformation deploy \
-              --template-file cluster.yml \
-              --stack-name "shorty-cluster-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --tags project=shorty-${CIRCLE_WORKFLOW_ID:0:7}
-      - run:
-          name: PUT EC2 Public IP >>  memstash
-          # Get the shorty-cluster public IP
-          # Put the public IP into memstash 
+          name: PUT loadbalancer url into memstash
           command: |
             CLUSTER_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=shorty-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
-            --request PUT --data "http://$CLUSTER_IP:5000" https://api.memstash.io/values/CLUSTER_URL
+            --request PUT --data "http://a67d25a5dbcc6421086a38c8ca8b31dc-1727363491.us-east-2.elb.amazonaws.com/" https://api.memstash.io/values/API_URL
       
       - run:
-          name: Ensure front-end infrastructure exist
+          name: Ensure frontend infrastructure exist
           working_directory: ./.circleci/files
           command: |
             aws cloudformation deploy \
@@ -127,44 +115,6 @@ jobs:
 
       - destroy_environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-
-  configure_infrastructure:
-    <<: *alpineImage
-    steps:
-      # Checkout code from git
-      - checkout
-      # Add ssh keys with fingerprint
-      - add_ssh_keys:
-          fingerprints: ["7d:a8:21:bd:bd:60:fd:a9:3b:bf:39:aa:21:ce:f1:95"]
-      - run:
-          name: Install dependencies curl, Ansible
-          command: |
-            apk --no-cache add curl
-            apk add --update ansible
-            ansible --version
-            
-      - run:
-          name: Install AWS CLI dependencies
-          working_directory: /tmp
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            ./aws/install
-
-      - run:
-          name: Configure server
-          working_directory: ./.circleci/ansible
-          command: |
-            pip install awscli
-            aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=shorty-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --output text >> inventory
-            cat inventory
-            ansible-playbook -i inventory configure-server.yml
-      # Here's where you will add some code to rollback on failure      
-      # - destroy_environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   deploy_frontend:
     <<: *nodeImage
@@ -187,7 +137,7 @@ jobs:
           command: |
             pwd
             ls -la
-            export REACT_APP_API_URL=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/CLUSTER_URL)
+            export REACT_APP_API_URL=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/API_URL)
             echo ${REACT_APP_API_URL}
             npm install
             npm run build
@@ -215,8 +165,8 @@ jobs:
           name: Get cluster url & smoke test
           working_directory: .
           command: |
-            export CLUSTER_URL=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/CLUSTER_URL)
-            curl "$CLUSTER_URL/api/status"
+            export API_URL=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET https://api.memstash.io/values/API_URL)
+            curl "$API_URL/api/status"
       - run:
           name: frontend smoke test.
           command: |
@@ -252,7 +202,6 @@ jobs:
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=shorty-${CIRCLE_WORKFLOW_ID:0:7}
 
-
   cleanup:
     <<: *awsImage
     steps:
@@ -267,7 +216,6 @@ jobs:
               echo "$Prev_WorkFlow_ID!=$Current_Workflow_ID => will delete Prev_WorkFlow_ID version"
               aws s3 rm "s3://shorty-${Prev_WorkFlow_ID}" --recursive
               aws cloudformation delete-stack --stack-name "shorty-frontend-${Prev_WorkFlow_ID}"
-              aws cloudformation delete-stack --stack-name "shorty-cluster-${Prev_WorkFlow_ID}"
             else
               echo "$Prev_WorkFlow_ID==$Current_Workflow_ID or its the first version"
             fi
@@ -282,12 +230,9 @@ workflows:
       - deploy_infra:
           requires:
             - test
-      - configure_infrastructure:
-          requires:
-            - deploy_infra
       - deploy_frontend:
           requires:
-            - configure_infrastructure
+            - deploy_infra
       - smoke-test:
           requires:
               - deploy_frontend

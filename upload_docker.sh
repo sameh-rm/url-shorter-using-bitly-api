@@ -6,7 +6,7 @@
 # Step 1:
 # Create dockerpath
 # dockerpath=<your docker ID/path>
-dockerpath=urokai/udacity-cloud-devops-capestone
+dockerpath=urokai/shorty
 # Step 2:  
 # Authenticate & tag
 echo "Docker ID and Image: $dockerpath"
