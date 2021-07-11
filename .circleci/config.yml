@@ -100,42 +100,30 @@ jobs:
             docker commit shorty urokai/shorty
             docker push shorty urokai/shorty
 
-  deploy_infra:
-    <<: *awsImage
+  deploy-infra:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
     steps:
       - checkout
-      - kubernetes/install-kubectl
-      - run:
-          name: Create cluster
-          command: |
-            eksctl create cluster \
-            --name shorty \
-            --version 1.19 \
-            --region us-east-2 \
-            --nodegroup-name shorty-workers \
-            --node-type t2.micro \
-            --nodes 2 \
-            --nodes-min 1 \
-            --nodes-max 3 \
-            --node-ami auto \
-            --zones us-east-2a \
-            --zones us-east-2b 
-      - run:
-          name: Update KubeConfig
-          command: aws eks --region us-west-2 update-kubeconfig --name shorty
-
-      - run:
-          name: deploy backend loadbalancer
-          working_directory: ./.circleci/files
-          command: |
-              kubectl apply -f files/deployment.yml
-              kubectl apply -f files/service.yml
-              aws elb describe-load-balancers
-
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: files/deployment.yml
+          resource-name: deployment/shorty-${CIRCLE_WORKFLOW_ID:0:7}
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: files/service.yml
+          resource-name: service/shorty-${CIRCLE_WORKFLOW_ID:0:7}
       - run:
           name: PUT loadbalancer url into memstash
           command: |
-            echo "export API_URL=http://$(kubectl get service/service-${CIRCLE_WORKFLOW_ID:0:7} --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
+            echo "export API_URL=http://$(kubectl get service/shorty-${CIRCLE_WORKFLOW_ID:0:7} --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
             --request PUT --data "$BASH_ENV" https://api.memstash.io/values/API_URL
       
@@ -259,33 +247,34 @@ jobs:
 workflows:
   shorty:
     jobs:
-      - aws-eks/create-cluster:
-          cluster-name: shorty
+      # - aws-eks/create-cluster:
+      #     cluster-name: shorty
       # - test-cluster:
       #     cluster-name: shorty
       #     requires:
       #       - aws-eks/create-cluster
-      # - build
-      # - lint
-      # - test:
-      #     requires:
-      #       - build
-      #       - lint
-      # - update_image:
-      #     requires:
-      #       - test
-      # - deploy_infra:
-      #     requires:
-      #       - test
-      # - deploy_frontend:
-      #     requires:
-      #       - deploy_infra
-      # - smoke-test:
-      #     requires:
-      #         - deploy_frontend
-      # - cloudfront-update:
-      #     requires:
-      #         - smoke-test
-      # - cleanup:
-      #     requires:
-      #         - cloudfront-update
+      - build
+      - lint
+      - test:
+          requires:
+            - build
+            - lint
+      - update_image:
+          requires:
+            - test
+      - deploy_infra:
+          cluster-name: shorty
+          requires:
+            - test
+      - deploy_frontend:
+          requires:
+            - deploy_infra
+      - smoke-test:
+          requires:
+              - deploy_frontend
+      - cloudfront-update:
+          requires:
+              - smoke-test
+      - cleanup:
+          requires:
+              - cloudfront-update
