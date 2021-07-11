@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  aws-eks: circleci/aws-eks@1.1.0
 circlePython: &circlePython
   docker:
     - image: circleci/python:3.7
@@ -98,17 +100,18 @@ jobs:
             docker push shorty urokai/shorty
 
   deploy_infra:
-    <<: *awsImage
+    executor: aws-eks/python3
     steps:
       - checkout
       - run:
           name: Ensure EKS Cluster Exists
           working_directory: ./.circleci/files
           command: |
+              apk install tar    
               curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
               sudo mv /tmp/eksctl /usr/local/bin
               eksctl version
-              
+
               eksctl create cluster --name shorty --region us-east-2 \
                 --with-oidc --ssh-access --ssh-public-key udacity --managed
 
@@ -241,7 +244,9 @@ jobs:
             else
               echo "$Prev_WorkFlow_ID==$Current_Workflow_ID or its the first version"
             fi
-    
+orbs:
+  aws-eks: circleci/aws-eks@0.2.3
+  kubernetes: circleci/kubernetes@0.4.0 
 workflows:
   shorty:
     jobs:
