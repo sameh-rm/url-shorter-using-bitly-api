@@ -18,9 +18,11 @@ ENV ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
 
 COPY . /app/
 
-RUN make setup
-RUN make install
-RUN make test
+RUN python3 -m venv ~/venv
+RUN source ~/venv/bin/activate
+RUN pip install --upgrade pip &&\
+		pip install -r requirements.txt
+RUN python3 manage.py test
 
 EXPOSE 5000
 
