@@ -1,4 +1,8 @@
 version: 2.1
+orbs:
+  kubernetes: circleci/kubernetes@0.11.2
+  aws-eks: circleci/aws-eks@1.0.3
+
 circlePython: &circlePython
   docker:
     - image: circleci/python:3.7
@@ -101,36 +105,40 @@ jobs:
     <<: *awsImage
     steps:
       - checkout
+      - kubernetes/install-kubectl
       - run:
-          name: Ensure EKS Cluster Exists
+          name: Create cluster
+          command: |
+            eksctl create cluster \
+            --name shorty \
+            --version 1.19 \
+            --region us-east-2 \
+            --nodegroup-name shorty-workers \
+            --node-type t2.micro \
+            --nodes 2 \
+            --nodes-min 1 \
+            --nodes-max 3 \
+            --node-ami auto \
+            --zones us-east-2a \
+            --zones us-east-2b 
+      - run:
+          name: Update KubeConfig
+          command: aws eks --region us-west-2 update-kubeconfig --name shorty
+
+      - run:
+          name: deploy backend loadbalancer
           working_directory: ./.circleci/files
           command: |
-              yum install -y tar
-              curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-              mv /tmp/eksctl /usr/local/bin
-              eksctl version
-              curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
-              chmod +x ./kubectl
-              mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-              kubectl version --short --client
-              
-              eksctl create cluster --name shorty --region us-east-2 \
-                --with-oidc --ssh-access --ssh-public-key udacity --managed
-
-              
               kubectl apply -f files/deployment.yml
               kubectl apply -f files/service.yml
               aws elb describe-load-balancers
-
+              
       - run:
           name: PUT loadbalancer url into memstash
           command: |
-            CLUSTER_IP=$(aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=shorty-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --output text)
+            echo "export API_URL=http://$(kubectl get service/service-<< parameters.id >> --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
-            --request PUT --data "http://a67d25a5dbcc6421086a38c8ca8b31dc-1727363491.us-east-2.elb.amazonaws.com" https://api.memstash.io/values/API_URL
+            --request PUT --data "$BASH_ENV" https://api.memstash.io/values/API_URL
       
       - run:
           name: Ensure frontend infrastructure exist
