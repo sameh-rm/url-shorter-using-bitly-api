@@ -1,8 +1,7 @@
 version: 2.1
 orbs:
   kubernetes: circleci/kubernetes@0.11.2
-  aws-eks: circleci/aws-eks@1.0.3
-
+  aws-eks: circleci/aws-eks@1.1.0
 circlePython: &circlePython
   docker:
     - image: circleci/python:3.7
@@ -260,27 +259,33 @@ jobs:
 workflows:
   shorty:
     jobs:
-      - build
-      - lint
-      - test:
+      - aws-eks/create-cluster:
+          cluster-name: shorty
+      - test-cluster:
+          cluster-name: shorty
           requires:
-            - build
-            - lint
-      - update_image:
-          requires:
-            - test
-      - deploy_infra:
-          requires:
-            - test
-      - deploy_frontend:
-          requires:
-            - deploy_infra
-      - smoke-test:
-          requires:
-              - deploy_frontend
-      - cloudfront-update:
-          requires:
-              - smoke-test
-      - cleanup:
-          requires:
-              - cloudfront-update
+            - aws-eks/create-cluster
+      # - build
+      # - lint
+      # - test:
+      #     requires:
+      #       - build
+      #       - lint
+      # - update_image:
+      #     requires:
+      #       - test
+      # - deploy_infra:
+      #     requires:
+      #       - test
+      # - deploy_frontend:
+      #     requires:
+      #       - deploy_infra
+      # - smoke-test:
+      #     requires:
+      #         - deploy_frontend
+      # - cloudfront-update:
+      #     requires:
+      #         - smoke-test
+      # - cleanup:
+      #     requires:
+      #         - cloudfront-update
