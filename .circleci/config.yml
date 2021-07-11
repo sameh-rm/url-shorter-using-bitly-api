@@ -100,7 +100,7 @@ jobs:
             docker commit shorty urokai/shorty
             docker push shorty urokai/shorty
 
-  deploy-infra:
+  deploy_infra:
     executor: aws-eks/python3
     parameters:
       cluster-name:
