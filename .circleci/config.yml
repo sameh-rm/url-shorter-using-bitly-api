@@ -79,7 +79,9 @@ jobs:
             pip3 freeze
             python manage.py test
   build_image:
-    - checkout
+    <<: *circlePython
+    steps:
+      - checkout
       - setup_remote_docker
       - setup-aws-cli
       - setup-kubectl
