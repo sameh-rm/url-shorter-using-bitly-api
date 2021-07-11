@@ -78,6 +78,7 @@ jobs:
             source ~/venv/bin/activate
             pip3 freeze
             python manage.py test
+
   build_image:
     <<: *circlePython
     steps:
@@ -252,8 +253,13 @@ workflows:
           requires:
             - build
             - lint
+      - build_image:
+          requires:
+            - test
       - aws-eks/create-cluster:
           cluster-name: shorty-${CIRCLE_WORKFLOW_ID:0:7}
+          requires:
+            - build_image
       - deploy_infra:
           cluster-name: shorty-${CIRCLE_WORKFLOW_ID:0:7}
           requires:
