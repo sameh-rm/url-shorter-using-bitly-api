@@ -116,11 +116,13 @@ jobs:
           install-kubectl: true
       - run:
           name: Deploy Api Infra
+          working_directory: ./.circleci/files
           command: |
             kubectl apply -f deployment.yml
 
       - run:
           name: Deploy Service 
+          working_directory: ./.circleci/files
           command: |
             kubectl apply -f service.yml
 
