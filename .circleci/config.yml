@@ -119,6 +119,20 @@ jobs:
           resource-file-path: ./.circleci/files/deployment.yml
           resource-name: deployment/udacity-shorty
       - run:
+          name: Create Api Service
+          working_directory: ./.circleci/files
+          command: |
+            kubectl apply -f service.yml
+            kubectl get pods
+            kubectl get deployments
+            kubectl get services
+      - run:
+          name: PUT loadbalancer url into memstash
+          command: |
+            echo "export API_URL=http://$(kubectl get service/shorty-service --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
+            curl -H "Content-Type: text/plain" -H "token: b3a2d416-a033-40ae-86e2-e536649dceb0" \
+            --request PUT --data "$API_URL" https://api.memstash.io/values/API_URL
+      - run:
           name: Ensure frontend infrastructure exist
           working_directory: ./.circleci/files
           command: |
@@ -127,23 +141,6 @@ jobs:
               --stack-name "shorty-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=shorty-${CIRCLE_WORKFLOW_ID:0:7}
-      - run:
-          name: Create Api Service
-          working_directory: ./.circleci/files
-          command: |
-            kubectl apply -f service.yml
-            kubectl get pods
-            kubectl get deployments
-            kubectl get services
-
-
-      - run:
-          name: PUT loadbalancer url into memstash
-          command: |
-            echo "export API_URL=http://$(kubectl get service/shorty-service --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
-            curl -H "Content-Type: text/plain" -H "token: b3a2d416-a033-40ae-86e2-e536649dceb0" \
-            --request PUT --data "$BASH_ENV" https://api.memstash.io/values/API_URL
-      
 
 
       - destroy_environment:
