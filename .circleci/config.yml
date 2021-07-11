@@ -118,13 +118,15 @@ jobs:
           name: Deploy Api Infra
           working_directory: ./.circleci/files
           command: |
-            kubectl apply -f deployment.yml
+            pwd && ls -la
+            kubectl apply -f ./.circleci/files/deployment.yml
 
       - run:
           name: Deploy Service 
           working_directory: ./.circleci/files
           command: |
-            kubectl apply -f service.yml
+            pwd && ls -la
+            kubectl apply -f ./.circleci/files/service.yml
 
       - run:
           name: PUT loadbalancer url into memstash
