@@ -91,7 +91,6 @@ jobs:
           name: Update Docker Image
           command: |
             docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
-            docker version
             docker build --tag=shorty .
             docker run  -d  -m "1G" \
               -p5000:5000  --name shorty shorty
@@ -102,6 +101,16 @@ jobs:
     <<: *awsImage
     steps:
       - checkout
+      - run:
+          name: Ensure EKS Cluster Exists
+          working_directory: ./.circleci/files
+          command: |
+              eksctl create cluster --name shorty --region us-east-2 \
+                --with-oidc --ssh-access --ssh-public-key udacity --managed
+
+              kubectl apply -f files/deployment.yml
+              kubectl apply -f files/service.yml
+              aws elb describe-load-balancers
       - run:
           name: PUT loadbalancer url into memstash
           command: |
