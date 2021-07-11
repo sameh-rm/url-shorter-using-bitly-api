@@ -117,7 +117,7 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: ./.circleci/files/deployment.yml
-          resource-name: deployment/shorty-${CIRCLE_WORKFLOW_ID:0:7}
+          resource-name: deployment/udacity-shorty
       - run:
           name: Ensure frontend infrastructure exist
           working_directory: ./.circleci/files
@@ -127,15 +127,15 @@ jobs:
               --stack-name "shorty-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=shorty-${CIRCLE_WORKFLOW_ID:0:7}
-              
+
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: ./.circleci/files/service.yml
-          resource-name: service/shorty-${CIRCLE_WORKFLOW_ID:0:7}
+          resource-name: service/udacity-shorty
       - run:
           name: PUT loadbalancer url into memstash
           command: |
-            echo "export API_URL=http://$(kubectl get service/shorty-${CIRCLE_WORKFLOW_ID:0:7} --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
+            echo "export API_URL=http://$(kubectl get service/udacity-shorty --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
             --request PUT --data "$BASH_ENV" https://api.memstash.io/values/API_URL
       
