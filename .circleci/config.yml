@@ -80,8 +80,7 @@ jobs:
             python manage.py test
 
   build_image:
-    docker:
-      - image: docker:17.05.0-ce-gitn
+    <<: *circlePython
     steps:
       - checkout
       - setup_remote_docker
@@ -93,6 +92,7 @@ jobs:
           command: |
             docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
             docker push urokai/shorty
+
 
   deploy_infra:
     executor: aws-eks/python3
