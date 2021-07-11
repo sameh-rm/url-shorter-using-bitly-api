@@ -19,10 +19,6 @@ node_image: &nodeImage
   docker:
     - image: circleci/node:13.8.0
 
-docker_image: &dockerImage
-  docker:
-    - image: docker
-
 commands:
   destroy_environment:
     description: frontend cloudformation stacks given a workflow ID.
@@ -82,24 +78,19 @@ jobs:
             source ~/venv/bin/activate
             pip3 freeze
             python manage.py test
-
-  update_image:
-    <<: *dockerImage
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-              - venv-{{ checksum "requirements.txt" }}
-              - venv-
+  build_image:
+    - checkout
+      - setup_remote_docker
+      - setup-aws-cli
+      - setup-kubectl
       - run:
-          name: Update Docker Image
+          name: Build Backend image
+          command: docker build -t perfectmak/txmgmt:${CIRCLE_WORKFLOW_ID} ~/project/
+      - run:
+          name: Publish Backend Image
           command: |
             docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
-            docker build --tag=shorty .
-            docker run  -d  -m "1G" \
-              -p5000:5000  --name shorty shorty
-            docker commit shorty urokai/shorty
-            docker push shorty urokai/shorty
+            docker push urokai/shorty
 
   deploy_infra:
     executor: aws-eks/python3
@@ -253,25 +244,18 @@ jobs:
 workflows:
   shorty:
     jobs:
-      # - aws-eks/create-cluster:
-      #     cluster-name: shorty
-      # - test-cluster:
-      #     cluster-name: shorty
-      #     requires:
-      #       - aws-eks/create-cluster
-      # - build
-      # - lint
-      # - test:
-      #     requires:
-      #       - build
-      #       - lint
-      # - update_image:
-      #     requires:
-      #       - test
+      - build
+      - lint
+      - test:
+          requires:
+            - build
+            - lint
+      - aws-eks/create-cluster:
+          cluster-name: shorty-${CIRCLE_WORKFLOW_ID:0:7}
       - deploy_infra:
-          cluster-name: shorty
-          # requires:
-          #   - test
+          cluster-name: shorty-${CIRCLE_WORKFLOW_ID:0:7}
+          requires:
+            - aws-eks/create-cluster
       - deploy_frontend:
           requires:
             - deploy_infra
