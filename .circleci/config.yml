@@ -261,10 +261,10 @@ workflows:
     jobs:
       - aws-eks/create-cluster:
           cluster-name: shorty
-      - test-cluster:
-          cluster-name: shorty
-          requires:
-            - aws-eks/create-cluster
+      # - test-cluster:
+      #     cluster-name: shorty
+      #     requires:
+      #       - aws-eks/create-cluster
       # - build
       # - lint
       # - test:
