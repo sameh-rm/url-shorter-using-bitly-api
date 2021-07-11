@@ -80,7 +80,7 @@ jobs:
             python manage.py test
 
   build_image:
-    executor: aws-eks/python3
+    <<: *circlePython
     steps:
       - checkout
       - run:
