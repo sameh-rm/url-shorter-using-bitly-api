@@ -127,11 +127,11 @@ jobs:
               --stack-name "shorty-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=shorty-${CIRCLE_WORKFLOW_ID:0:7}
-
-      - kubernetes/create-or-update-resource:
-          get-rollout-status: true
-          resource-file-path: ./.circleci/files/service.yml
-          resource-name: service/shorty-service
+      - run:
+          name: Ensure frontend infrastructure exist
+          working_directory: ./.circleci/files
+          command: |
+            kubectl apply -f service.yml
       - run:
           name: PUT loadbalancer url into memstash
           command: |
