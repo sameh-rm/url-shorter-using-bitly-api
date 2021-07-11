@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  kubernetes: circleci/kubernetes@0.11.2
-  aws-eks: circleci/aws-eks@1.1.0
+  aws-eks: circleci/aws-eks@0.2.3
+  kubernetes: circleci/kubernetes@0.4.0
 
 circlePython: &circlePython
   docker:
@@ -255,15 +255,15 @@ workflows:
       #     cluster-name: shorty
       #     requires:
       #       - aws-eks/create-cluster
-      - build
-      - lint
-      - test:
-          requires:
-            - build
-            - lint
-      - update_image:
-          requires:
-            - test
+      # - build
+      # - lint
+      # - test:
+      #     requires:
+      #       - build
+      #       - lint
+      # - update_image:
+      #     requires:
+      #       - test
       - deploy_infra:
           cluster-name: shorty
           requires:
