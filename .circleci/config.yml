@@ -80,7 +80,8 @@ jobs:
             python manage.py test
 
   build_image:
-    <<: *circlePython
+    docker:
+      - image: docker:17.05.0-ce-gitn
     steps:
       - checkout
       - run:
