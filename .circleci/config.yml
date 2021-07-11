@@ -80,12 +80,9 @@ jobs:
             python manage.py test
 
   build_image:
-    <<: *circlePython
+    executor: aws-eks/python3
     steps:
       - checkout
-      - setup_remote_docker
-      - setup-aws-cli
-      - setup-kubectl
       - run:
           name: Build Backend image
           command: docker build -t perfectmak/txmgmt:${CIRCLE_WORKFLOW_ID} ~/project/
