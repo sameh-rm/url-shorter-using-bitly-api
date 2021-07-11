@@ -86,7 +86,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Backend image
-          command: docker build -t perfectmak/txmgmt:${CIRCLE_WORKFLOW_ID} ~/project/
+          command: docker build -t urokai/shorty .
       - run:
           name: Publish Backend Image
           command: |
