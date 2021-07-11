@@ -131,11 +131,11 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: ./.circleci/files/service.yml
-          resource-name: service/udacity-shorty
+          resource-name: service/shorty-service
       - run:
           name: PUT loadbalancer url into memstash
           command: |
-            echo "export API_URL=http://$(kubectl get service/udacity-shorty --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
+            echo "export API_URL=http://$(kubectl get service/shorty-service --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
             --request PUT --data "$BASH_ENV" https://api.memstash.io/values/API_URL
       
