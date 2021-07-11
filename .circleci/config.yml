@@ -111,16 +111,20 @@ jobs:
     steps:
       - checkout
       - kubernetes/install
-      - aws-eks/update-kubeconfig-with-authenticator:
+      - run:
+          name: PUT loadbalancer url into memstash
+          command: |
+            pwd
+            ls -la
           cluster-name: << parameters.cluster-name >>
           install-kubectl: true
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
-          resource-file-path: ./.circleci/files/deployment.yml
+          resource-file-path: ./files/deployment.yml
           resource-name: deployment/shorty-${CIRCLE_WORKFLOW_ID:0:7}
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
-          resource-file-path: ./.circleci/files/service.yml
+          resource-file-path: ./files/service.yml
           resource-name: service/shorty-${CIRCLE_WORKFLOW_ID:0:7}
       - run:
           name: PUT loadbalancer url into memstash
