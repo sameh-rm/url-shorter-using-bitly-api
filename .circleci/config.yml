@@ -86,7 +86,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Backend image
-          command: docker build -t urokai/shorty .
+          command: docker build -t urokai/shorty ~/project/
       - run:
           name: Publish Backend Image
           command: |
