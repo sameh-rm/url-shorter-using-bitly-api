@@ -132,11 +132,11 @@ jobs:
               kubectl apply -f files/deployment.yml
               kubectl apply -f files/service.yml
               aws elb describe-load-balancers
-              
+
       - run:
           name: PUT loadbalancer url into memstash
           command: |
-            echo "export API_URL=http://$(kubectl get service/service-<< parameters.id >> --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
+            echo "export API_URL=http://$(kubectl get service/service-${CIRCLE_WORKFLOW_ID:0:7} --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $BASH_ENV
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" \
             --request PUT --data "$BASH_ENV" https://api.memstash.io/values/API_URL
       
