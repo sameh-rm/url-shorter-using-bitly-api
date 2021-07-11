@@ -84,6 +84,7 @@ jobs:
       - image: docker:17.05.0-ce-gitn
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Build Backend image
           command: docker build -t perfectmak/txmgmt:${CIRCLE_WORKFLOW_ID} ~/project/
