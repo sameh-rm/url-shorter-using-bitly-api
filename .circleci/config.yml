@@ -266,8 +266,8 @@ workflows:
       #       - test
       - deploy_infra:
           cluster-name: shorty
-          requires:
-            - test
+          # requires:
+          #   - test
       - deploy_frontend:
           requires:
             - deploy_infra
