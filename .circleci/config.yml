@@ -1,8 +1,4 @@
 version: 2.1
-orbs:
-  aws-eks: circleci/aws-eks@1.1.0
-  kubernetes: circleci/kubernetes@0.4.0
-
 circlePython: &circlePython
   docker:
     - image: circleci/python:3.7
@@ -102,12 +98,13 @@ jobs:
             docker push shorty urokai/shorty
 
   deploy_infra:
-    executor: aws-eks/python3
+    <<: *awsImage
     steps:
       - checkout
       - run:
           name: Ensure EKS Cluster Exists
           working_directory: ./.circleci/files
+          command: |
           command: |
               sudo yum install tar
               curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
@@ -125,6 +122,7 @@ jobs:
               kubectl apply -f files/deployment.yml
               kubectl apply -f files/service.yml
               aws elb describe-load-balancers
+              
       - run:
           name: PUT loadbalancer url into memstash
           command: |
@@ -251,7 +249,7 @@ jobs:
             else
               echo "$Prev_WorkFlow_ID==$Current_Workflow_ID or its the first version"
             fi
-
+    
 workflows:
   shorty:
     jobs:
