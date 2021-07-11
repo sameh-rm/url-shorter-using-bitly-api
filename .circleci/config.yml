@@ -90,6 +90,7 @@ jobs:
       - run:
           name: Publish Backend Image
           command: |
+            apk install make
             docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
             docker push urokai/shorty
 
