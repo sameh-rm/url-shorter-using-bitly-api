@@ -54,7 +54,7 @@ test:
 lint:
 	# See local hadolint install instructions:   https://github.com/hadolint/hadolint
 	# This is linter for Dockerfiles
-	hadolint Dockerfile
+	hadolint --ignore DL3008 Dockerfile
 
 start_minikube:
 	minikube start -Y
