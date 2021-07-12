@@ -14,7 +14,7 @@ ENV MONGO_TEST_URI=mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@mern.qmurp.
 ENV DOMAIN=localhost:5000
 ENV ACCESS_TOKEN=c0a816258e5e36f9558185f8c9b5c76a3aff1369
 
-RUN apt-get update && apt install build-essential -y --no-install-recommends
+RUN apt-get update && apt install build-essential -y --no-install-recommends && apt-get clean  && rm -rf /var/lib/apt/lists/*
 # RUN apt-get update && apt-get -y --no-install-recommends install make=3.75 && apt-get clean  && rm -rf /var/lib/apt/lists/*
 
 COPY . /app/
