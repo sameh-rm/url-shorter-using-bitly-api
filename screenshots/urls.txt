@@ -1,0 +1,6 @@
+cloud front:
+https://shorty-0655ed1.s3.us-east-2.amazonaws.com/
+api:
+http://acb1538a297764d30820afaa8727f296-42512152.us-east-2.elb.amazonaws.com/
+s3:
+http://shorty-0655ed1.s3-website.us-east-2.amazonaws.com/

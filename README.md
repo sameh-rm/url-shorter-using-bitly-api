@@ -24,6 +24,7 @@
 - [Usage](/backend)
 - [Built Using](#built_using)
 - [Authors](#authors)
+- [URLS](#urls)
 - [Acknowledgments](#acknowledgement)
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
@@ -120,6 +121,19 @@ You need **[Python 3.7](https://www.python.org/downloads/release/python-377/)** 
 
 - [@samerh-rm](https://github.com/sameh-rm) - Initial work
 
+## 🏁 URLS <a name = "urls"></a>
+CloudFront:
+```
+https://shorty-0655ed1.s3.us-east-2.amazonaws.com/
+```
+Shorty API:
+```
+http://acb1538a297764d30820afaa8727f296-42512152.us-east-2.elb.amazonaws.com/
+```
+s3:
+```
+http://shorty-0655ed1.s3-website.us-east-2.amazonaws.com/
+```
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
 - Hat tip to anyone whose code was used
