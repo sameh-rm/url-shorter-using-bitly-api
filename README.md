@@ -5,15 +5,16 @@
 
 <h3 align="center">Url Shroter API</h3>
 
-<div align="center">
+<div align="center" >
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
+[![Shorty](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://app.circleci.com/pipelines/github/sameh-rm/url-shorter-using-bitly-api/180/workflows/0655ed1d-4304-4cc1-b592-11a21d269cf8)
 </div>
 
 ---
 
-<p align="center"> URL Shorter Demo API.
+<p align="center"> URL Shorter Demo API for Udacity Devops Capestone.
     <br> 
 </p>
 

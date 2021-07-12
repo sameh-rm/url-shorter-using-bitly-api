@@ -123,7 +123,7 @@ jobs:
           name: PUT loadbalancer url into memstash
           command: |
             API_URL=http://$(kubectl get service/shorty-service --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-            curl -H "Content-Type: text/plain" -H "token: b3a2d416-a033-40ae-86e2-e536649dceb0" \
+            curl -H "Content-Type: text/plain" -H "token:  ${MEMSTASH_TOKEN}" \
             --request PUT --data "$API_URL" https://api.memstash.io/values/API_URL
       - run:
           name: Ensure frontend infrastructure exist
